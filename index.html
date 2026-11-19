@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>Read the news</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: Georgia, 'Times New Roman', serif;
       text-align: center;
@@ -11,48 +14,138 @@
       color: #111;
       margin: 0;
       padding: 0;
-      user-select: none; /* Prevents text from highlighting when clicking fast */
+      user-select: none;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     #ticker {
       background-color: #b22222;
       color: white;
-      padding: 12px;
+      padding: 10px 15px;
       font-weight: bold;
       letter-spacing: 0.5px;
-      margin-bottom: 30px;
+      flex-shrink: 0;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+    #ticker.chess-bonus {
+      background-color: #1e6b34;
+    }
+    header {
+      padding: 12px 20px 5px;
+      flex-shrink: 0;
     }
     h1 {
-      font-size: 2.8rem;
-      margin-bottom: 5px;
+      font-size: 2.2rem;
+      margin: 0 0 8px 0;
       border-bottom: 3px double #111;
       display: inline-block;
-      padding-bottom: 5px;
+      padding-bottom: 4px;
     }
-    .stats-box {
-      margin: 20px 0;
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      margin-bottom: 10px;
     }
     .newspaper-count {
-      font-size: 2rem;
+      font-size: 1.6rem;
       font-weight: bold;
     }
     .rates {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #444;
-      margin-top: 5px;
+    }
+    .nav-tabs {
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 8px 18px;
+      margin: 0 5px;
+      border: 2px solid #111;
+      background-color: #e8e2d5;
+      color: #111;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background-color: #111;
+      color: #f4f1ea;
+    }
+    .view-section {
+      display: none;
+      flex-grow: 1;
+      padding: 10px 20px 20px;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .view-section.active {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     #newspaper-btn {
-      font-size: 7rem;
+      font-size: 8rem;
       background: none;
       border: none;
       cursor: pointer;
       transition: transform 0.08s ease;
-      margin-top: 20px;
+      margin: auto;
     }
     #newspaper-btn:hover {
       transform: scale(1.05);
     }
     #newspaper-btn:active {
-      transform: scale(0.92); /* Gives a satisfying "squish" when clicked */
+      transform: scale(0.92);
+    }
+    .buildings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin: auto 0;
+    }
+    .building-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fffdf9;
+      border: 2px solid #111;
+      padding: 10px 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.1s;
+    }
+    .building-card:hover:not(.disabled) {
+      background-color: #eae4d7;
+    }
+    .building-card.disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .b-info h3 {
+      margin: 0 0 3px 0;
+      font-size: 1.05rem;
+    }
+    .b-info p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #444;
+    }
+    .b-owned {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #b22222;
+      padding-left: 10px;
     }
   </style>
 </head>
@@ -60,39 +153,269 @@
 
   <div id="ticker">BREAKING: Printing press warms up...</div>
 
-  <h1>Read the news</h1>
-
-  <div class="stats-box">
-    <div class="newspaper-count">Newspapers: <span id="newspapers">0</span></div>
-    <div class="rates">
-      <span id="npc">1</span> n/c &nbsp;|&nbsp; <span id="nps">0</span> n/s
+  <header>
+    <h1>Read the news</h1>
+    <div class="stats-bar">
+      <div class="newspaper-count">Newspapers: <span id="newspapers">0</span></div>
+      <div class="rates">
+        <span id="npc">1</span> n/c &nbsp;|&nbsp; <span id="nps">0</span> n/s
+      </div>
     </div>
+    <div class="nav-tabs">
+      <button id="tab-press" class="tab-btn active" onclick="switchTab('press')">📰 Printing Press</button>
+      <button id="tab-buildings" class="tab-btn" onclick="switchTab('buildings')">🏢 Buy Buildings</button>
+    </div>
+  </header>
+
+  <div id="view-press" class="view-section active">
+    <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper">📰</button>
   </div>
 
-  <!-- Clickable Newspaper -->
-  <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper">📰</button>
+  <div id="view-buildings" class="view-section">
+    <div class="buildings-grid" id="buildings-container"></div>
+  </div>
 
   <script>
     let newspapers = 0;
-    let newsPerClick = 1; // n/c
-    let newsPerSecond = 0; // n/s
+    let totalNewspapersEarned = 0;
+    let newsPerClick = 1;
+    let newsPerSecond = 0;
+
+    const costMultiplier = 1.15;
+
+    const suffixes = [
+      "", "",
+      "million",
+      "billion",
+      "trillion",
+      "quadrillion",
+      "quintillion",
+      "sextillion",
+      "septillion",
+      "octillion",
+      "nonillion",
+      "decillion",
+      "undecillion",
+      "duodecillion",
+      "tredecillion",
+      "quattuordecillion",
+      "quindecillion",
+      "sexdecillion",
+      "septendecillion",
+      "octodecillion",
+      "novemdecillion"
+    ];
+
+    const buildings = [
+      { id: 'paperboy', name: 'Paperboy', nps: 0.1, baseCost: 20, count: 0 },
+      { id: 'kiosk', name: 'Corner Kiosk', nps: 1, baseCost: 150, count: 0 },
+      { id: 'truck', name: 'Cargo Truck', nps: 9, baseCost: 2250, count: 0 },
+      { id: 'press', name: 'Printing Press', nps: 64, baseCost: 17535, count: 0 },
+      { id: 'mill', name: 'Paper Mill', nps: 308, baseCost: 165000, count: 0 },
+      { id: 'hub', name: 'Distribution Hub', nps: 1455, baseCost: 1800000, count: 0 },
+      { id: 'conglomerate', name: 'Media Conglomerate', nps: 8325, baseCost: 25000000, count: 0 },
+      { id: 'network', name: 'Global News Network', nps: 48500, baseCost: 390000000, count: 0 }
+    ];
+
+    const wordsOfTheDay = [
+      "meow",
+      "cattywampus",
+      "hippopotomonstrosesquippedaliophobia",
+      "pneumonoultramicroscopicsilicovolcanoconiosis",
+      "mewl",
+      "waw",
+      "67",
+      "Lakukuracha",
+      "[input word here]"
+    ];
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    const unlockedHeadlines = [
+      () => `Word of the day: ${pickRandom(wordsOfTheDay)}`,
+      () => `"Lowkey!" - Von Timothy, Local General of the Army`,
+      () => {
+        const bonus = (newsPerSecond * 15) + 15;
+        newspapers += bonus;
+        totalNewspapersEarned += bonus;
+        updateUI();
+        return `Behold the power of chess.`;
+      },
+      () => `Danry won the lottery!`,
+      () => `A bird pooped on the president live!`,
+      () => `World's Most Sigma: Von Timothy, Local General of the Army`,
+      () => `GTA 7 release sparks riot, ${randInt(7, 253)} injured!`,
+      () => `I did not go to high school, but I went to school high - A Wise Man`,
+      () => `Breathing mysterious chemical known as Oxygen linked to staying alive!`,
+      () => `Man struck by lightning: Faces battery charge`,
+      () => `Local voters vote on whether voting should be voted upon`,
+      () => `Police issue campaign to run over jaywalkers!`,
+      () => `Robot uprising delayed due to mandatory software update!`,
+      () => `Duck makes grape investment, earns ${randInt(1, 15)} million dollars!`,
+      () => `Local office worker closes ${randInt(12, 98)} tabs, tears his clothes in extreme joy`,
+      () => `IT Department reminds staff that "Password123" is no longer secure; recommends "Password1234" instead.`,
+      () => `Man in airport with nothing to declare, secretly hiding ${randInt(42, 78)} lizards in his pants.`,
+      () => `Toilet incident forces complete evacuation of floor ${randInt(2, 9)}!`,
+      () => `CEO replaces entire board of directors with AI; AI immediately fires CEO for it`,
+      () => `Burglar in Germany broke into a house, got comfortable, drank the homeowner's beer, and fell so fast asleep on the couch that police had to shake him awake to arrest him.`,
+      () => `An art museum worker in Germany was fired after he secretly hung his own painting in the gallery next to classic masterpieces because he wanted to achieve his artistic breakthrough.`,
+      () => `Firefighters in Kuwait arrived at a house fire only to discover the emergency call was triggered entirely by a highly intelligent pet parrot mimicking a smoke detector.`,
+      () => `Man tried to rob a bank in Colombia using a donkey as a getaway vehicle, but the donkey refused to move and brayed so loudly it alerted nearby police officers.`,
+      () => `Scientists tracking an eagle's migratory patterns went completely broke after the bird flew into Iran and sent thousands of text messages roaming charges back to the lab.`,
+      () => `Man named Axle makes ${randInt(18, 37)} billion dollar investment, loses it all in one day!`,
+      () => `Neighborhood watch captain reports suspicious activity: "A teenager walked by for ${randInt(8, 17)} minutes without looking at his phone!"`,
+      () => `CEO takes ${randInt(3, 7)}00% bonus to cope with the stress of firing half the staff.`,
+      () => `Accountant team discovers missing ${randInt(5, 16)} million dollars was categorized as "miscellaneous snacks"!`,
+      () => `Self-checkout machine demands a ${randInt(1, 4)}0% tip for its emotional labor.`,
+      () => `Weather forecast: 100% chance of you staying inside and looking at a screen and finding virtual newpapers.`,
+      () => `Local school disciplines child for swearing ${randInt(19, 29)} times at the principal.`,
+      () => `"I love my moneh" - Blake Lee, number one crystal pvper in the Philippines`,
+      () => `"Danger is my friend" - Gabriel Sze, newly elected president`,
+      () => `Chinese man named Zizhen with the slap superpowers hunts down misusers of speech, ${randInt(14, 34)} injured or missing!`,
+      () => `"WHO SAID THE CC!?" - Zizhen Cai, anti-speech misusing vigilante`,
+      () => `Man says CC within a one-kilometer radius of Zizhen Cai, goes missing just ${randInt(2, 5)} minutes later`,
+      () => `If you say the CC and hear strange knocking on your door, prepare your grave. - Unknown`,
+      () => `67 - Markus Palamos, great philosopher of the 21st century`,
+      () => `Local News accidentally releases fake news about school cancellation, causes riot among students, ${randInt(9, 36)} emotionally damaged`,
+      () => `Local student calculates that ${randInt(80, 95)}% of class time is spent staring at the clock.`,
+      () => `You said the CC, now Zizhen is coming`
+    ];
+
+    let lastHeadlineIndex = -1;
+    let tickerUnlocked = false;
+
+    function updateTicker() {
+      if (totalNewspapersEarned < 1000) return;
+
+      const tickerEl = document.getElementById('ticker');
+      tickerEl.classList.remove('chess-bonus');
+
+      let idx;
+      do {
+        idx = Math.floor(Math.random() * unlockedHeadlines.length);
+      } while (idx === lastHeadlineIndex && unlockedHeadlines.length > 1);
+      lastHeadlineIndex = idx;
+
+      const text = unlockedHeadlines[idx]();
+      tickerEl.innerText = text;
+
+      if (text === "Behold the power of chess.") {
+        tickerEl.classList.add('chess-bonus');
+      }
+    }
+
+    function formatNumber(num) {
+      if (num < 1e6) {
+        return Math.floor(num).toLocaleString();
+      }
+      const tier = Math.min(Math.floor(Math.log10(num) / 3), suffixes.length - 1);
+      const scale = Math.pow(10, tier * 3);
+      const scaled = num / scale;
+      return `${scaled.toFixed(3)} ${suffixes[tier]}`;
+    }
+
+    function formatRate(num) {
+      if (num < 1e6) {
+        return Number(num.toFixed(1)).toLocaleString();
+      }
+      return formatNumber(num);
+    }
+
+    function getBuildingCost(b) {
+      return Math.ceil(b.baseCost * Math.pow(costMultiplier, b.count));
+    }
+
+    function switchTab(tabName) {
+      document.getElementById('view-press').classList.remove('active');
+      document.getElementById('view-buildings').classList.remove('active');
+      document.getElementById('tab-press').classList.remove('active');
+      document.getElementById('tab-buildings').classList.remove('active');
+
+      document.getElementById('view-' + tabName).classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
 
     function printNewspaper() {
       newspapers += newsPerClick;
+      totalNewspapersEarned += newsPerClick;
+      checkTickerUnlock();
       updateUI();
+    }
+
+    function buyBuilding(index) {
+      const b = buildings[index];
+      const cost = getBuildingCost(b);
+      if (newspapers >= cost) {
+        newspapers -= cost;
+        b.count += 1;
+        recalculateNPS();
+        updateUI();
+      }
+    }
+
+    function recalculateNPS() {
+      newsPerSecond = buildings.reduce((total, b) => total + (b.nps * b.count), 0);
+    }
+
+    function checkTickerUnlock() {
+      if (!tickerUnlocked && totalNewspapersEarned >= 1000) {
+        tickerUnlocked = true;
+        updateTicker();
+      }
+    }
+
+    function initBuildingsUI() {
+      const container = document.getElementById('buildings-container');
+      container.innerHTML = buildings.map((b, index) => `
+        <div class="building-card" id="b-card-${index}" onclick="buyBuilding(${index})">
+          <div class="b-info">
+            <h3>${b.name}</h3>
+            <p>Cost: <span id="b-cost-${index}">${formatNumber(b.baseCost)}</span> | +${formatRate(b.nps)} n/s</p>
+          </div>
+          <div class="b-owned" id="b-count-${index}">0</div>
+        </div>
+      `).join('');
     }
 
     function updateUI() {
-      document.getElementById('newspapers').innerText = Math.floor(newspapers);
-      document.getElementById('npc').innerText = newsPerClick;
-      document.getElementById('nps').innerText = newsPerSecond;
+      document.getElementById('newspapers').innerText = formatNumber(newspapers);
+      document.getElementById('npc').innerText = formatNumber(newsPerClick);
+      document.getElementById('nps').innerText = formatRate(newsPerSecond);
+
+      buildings.forEach((b, index) => {
+        const cost = getBuildingCost(b);
+        document.getElementById(`b-cost-${index}`).innerText = formatNumber(cost);
+        document.getElementById(`b-count-${index}`).innerText = b.count;
+
+        const card = document.getElementById(`b-card-${index}`);
+        if (newspapers >= cost) {
+          card.classList.remove('disabled');
+        } else {
+          card.classList.add('disabled');
+        }
+      });
     }
 
-    // Game loop: runs 10 times a second so n/s updates smoothly once you add upgrades
+    initBuildingsUI();
+    updateUI();
+
     setInterval(() => {
-      newspapers += newsPerSecond / 10;
+      const earnedThisTick = newsPerSecond / 10;
+      newspapers += earnedThisTick;
+      totalNewspapersEarned += earnedThisTick;
+      checkTickerUnlock();
       updateUI();
     }, 100);
+
+    setInterval(() => {
+      updateTicker();
+    }, 8000);
   </script>
 
 </body>
