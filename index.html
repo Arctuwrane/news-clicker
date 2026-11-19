@@ -230,7 +230,7 @@
 <body>
 
   <div id="ticker-bar">
-    <div id="version-badge">v1.0.0</div>
+    <div id="version-badge">v1.0.1</div>
     <div id="ticker-text" title="Hold click to pause ticker (or click during chess event!)">BREAKING: Printing press warms up...</div>
     <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
   </div>
@@ -310,7 +310,8 @@
       { id: 'network', name: 'Global News Network', nps: 48500, baseCost: 390000000, count: 0 }
     ];
 
-    let lastHeadlineIndex = -1;
+    let recentHeadlines = [];
+    const HEADLINE_COOLDOWN = 10;
     let tickerUnlocked = false;
     let isTickerPaused = false;
     let tickerInterval = null;
@@ -384,16 +385,21 @@
       chessBonusAvailable = false;
       tickerBar.classList.remove('chess-bonus');
 
+      const maxHistory = Math.min(HEADLINE_COOLDOWN, unlockedHeadlines.length - 1);
       let idx;
       let text;
       do {
         idx = Math.floor(Math.random() * unlockedHeadlines.length);
         text = unlockedHeadlines[idx]();
       } while (
-        (idx === lastHeadlineIndex && unlockedHeadlines.length > 1) ||
+        (recentHeadlines.includes(idx) && unlockedHeadlines.length > 1) ||
         (isManualSkip && text === "Behold the power of chess.")
       );
-      lastHeadlineIndex = idx;
+
+      recentHeadlines.push(idx);
+      if (recentHeadlines.length > maxHistory) {
+        recentHeadlines.shift();
+      }
 
       tickerText.innerText = text;
 
@@ -486,13 +492,12 @@
 
       let x = centerX;
       let y = centerY;
-      const vx = (Math.random() - 0.5) * 7; // -3.5 to +3.5 px per step
-      let vy = -11 - Math.random() * 4;     // upward pop
+      const vx = (Math.random() - 0.5) * 7;
+      let vy = -11 - Math.random() * 4;
       const gravity = 0.65;
       let rotation = (Math.random() - 0.5) * 20;
       const vRot = (Math.random() - 0.5) * 10;
 
-      // Starts at 60% ghost (opacity: 0.40) and holds until touching an edge
       let ghost = 60;
       let fadingOut = false;
 
@@ -533,7 +538,7 @@
         clone.style.top = `${y}px`;
         clone.style.opacity = (100 - ghost) / 100;
         clone.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-      }, 10); // 0.01 seconds per tick -> 5 ticks (0.05s) once edge is touched
+      }, 10);
     }
 
     function printNewspaper() {
@@ -600,7 +605,6 @@
       });
     }
 
-    // Scratch-style forever sine-wave idle animation
     const newspaperBtnEl = document.getElementById('newspaper-btn');
     const startTime = performance.now();
 
