@@ -31,7 +31,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.25s ease;
     }
     #ticker-bar.chess-bonus {
       background-color: #1e6b34;
@@ -194,7 +194,7 @@
 <body>
 
   <div id="ticker-bar">
-    <div id="ticker-text" title="Hold click to pause ticker">BREAKING: Printing press warms up...</div>
+    <div id="ticker-text" title="Hold click to pause ticker (or click during chess event!)">BREAKING: Printing press warms up...</div>
     <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
   </div>
 
@@ -275,6 +275,7 @@
     let tickerUnlocked = false;
     let isTickerPaused = false;
     let tickerInterval = null;
+    let chessBonusAvailable = false;
 
     function saveGame() {
       if (isResetting) return;
@@ -334,26 +335,51 @@
       location.reload();
     }
 
-    function updateTicker(forceSkip = false) {
+    function updateTicker(isManualSkip = false) {
       if (totalNewspapersEarned < 1000) return;
-      if (isTickerPaused && !forceSkip) return;
+      if (isTickerPaused && !isManualSkip) return;
+
+      const tickerBar = document.getElementById('ticker-bar');
+      const tickerText = document.getElementById('ticker-text');
+
+      // Reset any unclaimed chess bonus when moving to a new headline
+      chessBonusAvailable = false;
+      tickerBar.classList.remove('chess-bonus');
+
+      let idx;
+      let text;
+      do {
+        idx = Math.floor(Math.random() * unlockedHeadlines.length);
+        text = unlockedHeadlines[idx]();
+      } while (
+        (idx === lastHeadlineIndex && unlockedHeadlines.length > 1) ||
+        (isManualSkip && text === "Behold the power of chess.")
+      );
+      lastHeadlineIndex = idx;
+
+      tickerText.innerText = text;
+
+      if (!isManualSkip && text === "Behold the power of chess.") {
+        chessBonusAvailable = true;
+        tickerBar.classList.add('chess-bonus');
+      }
+    }
+
+    function claimChessBonus() {
+      if (!chessBonusAvailable) return;
+      chessBonusAvailable = false;
+
+      const bonus = (newsPerSecond * 15) + 15;
+      newspapers += bonus;
+      totalNewspapersEarned += bonus;
 
       const tickerBar = document.getElementById('ticker-bar');
       const tickerText = document.getElementById('ticker-text');
       tickerBar.classList.remove('chess-bonus');
+      tickerText.innerText = `♟️ Chess bonus claimed: +${formatNumber(bonus)} newspapers!`;
 
-      let idx;
-      do {
-        idx = Math.floor(Math.random() * unlockedHeadlines.length);
-      } while (idx === lastHeadlineIndex && unlockedHeadlines.length > 1);
-      lastHeadlineIndex = idx;
-
-      const text = unlockedHeadlines[idx]();
-      tickerText.innerText = text;
-
-      if (text === "Behold the power of chess.") {
-        tickerBar.classList.add('chess-bonus');
-      }
+      updateUI();
+      saveGame();
     }
 
     function startTickerTimer() {
@@ -372,8 +398,8 @@
       startTickerTimer();
     }
 
-    // Hold-click on ticker text pauses automatic cycling until released
     const tickerTextEl = document.getElementById('ticker-text');
+    tickerTextEl.addEventListener('click', claimChessBonus);
     tickerTextEl.addEventListener('mousedown', () => { isTickerPaused = true; });
     tickerTextEl.addEventListener('touchstart', () => { isTickerPaused = true; }, { passive: true });
     window.addEventListener('mouseup', () => { isTickerPaused = false; });
