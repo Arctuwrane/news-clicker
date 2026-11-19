@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Read the news</title>
+  <style>
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      text-align: center;
+      background-color: #f4f1ea;
+      color: #111;
+      margin: 0;
+      padding: 0;
+      user-select: none; /* Prevents text from highlighting when clicking fast */
+    }
+    #ticker {
+      background-color: #b22222;
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 5px;
+      border-bottom: 3px double #111;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+    .stats-box {
+      margin: 20px 0;
+    }
+    .newspaper-count {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .rates {
+      font-size: 1.1rem;
+      color: #444;
+      margin-top: 5px;
+    }
+    #newspaper-btn {
+      font-size: 7rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.08s ease;
+      margin-top: 20px;
+    }
+    #newspaper-btn:hover {
+      transform: scale(1.05);
+    }
+    #newspaper-btn:active {
+      transform: scale(0.92); /* Gives a satisfying "squish" when clicked */
+    }
+  </style>
+</head>
+<body>
 
+  <div id="ticker">BREAKING: Printing press warms up...</div>
+
+  <h1>Read the news</h1>
+
+  <div class="stats-box">
+    <div class="newspaper-count">Newspapers: <span id="newspapers">0</span></div>
+    <div class="rates">
+      <span id="npc">1</span> n/c &nbsp;|&nbsp; <span id="nps">0</span> n/s
+    </div>
+  </div>
+
+  <!-- Clickable Newspaper -->
+  <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper">📰</button>
+
+  <script>
+    let newspapers = 0;
+    let newsPerClick = 1; // n/c
+    let newsPerSecond = 0; // n/s
+
+    function printNewspaper() {
+      newspapers += newsPerClick;
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById('newspapers').innerText = Math.floor(newspapers);
+      document.getElementById('npc').innerText = newsPerClick;
+      document.getElementById('nps').innerText = newsPerSecond;
+    }
+
+    // Game loop: runs 10 times a second so n/s updates smoothly once you add upgrades
+    setInterval(() => {
+      newspapers += newsPerSecond / 10;
+      updateUI();
+    }, 100);
+  </script>
+
+</body>
+</html>
