@@ -1,0 +1,69 @@
+const wordsOfTheDay = [
+  "meow",
+  "cattywampus",
+  "hippopotomonstrosesquippedaliophobia",
+  "pneumonoultramicroscopicsilicovolcanoconiosis",
+  "mewl",
+  "waw",
+  "67",
+  "Lakukuracha",
+  "[input word here]"
+];
+
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+const unlockedHeadlines = [
+  () => `Word of the day: ${pickRandom(wordsOfTheDay)}`,
+  () => `"Lowkey!" - Von Timothy, Local General of the Army`,
+  () => {
+    const bonus = (newsPerSecond * 15) + 15;
+    newspapers += bonus;
+    totalNewspapersEarned += bonus;
+    updateUI();
+    return `Behold the power of chess.`;
+  },
+  () => `Danry won the lottery!`,
+  () => `A bird pooped on the president live!`,
+  () => `World's Most Sigma: Von Timothy, Local General of the Army`,
+  () => `GTA 7 release sparks riot, ${randInt(7, 253)} injured!`,
+  () => `I did not go to high school, but I went to school high - A Wise Man`,
+  () => `Breathing mysterious chemical known as Oxygen linked to staying alive!`,
+  () => `Man struck by lightning: Faces battery charge`,
+  () => `Local voters vote on whether voting should be voted upon`,
+  () => `Police issue campaign to run over jaywalkers!`,
+  () => `Robot uprising delayed due to mandatory software update!`,
+  () => `Duck makes grape investment, earns ${randInt(1, 15)} million dollars!`,
+  () => `Local office worker closes ${randInt(12, 98)} tabs, tears his clothes in extreme joy`,
+  () => `IT Department reminds staff that "Password123" is no longer secure; recommends "Password1234" instead.`,
+  () => `Man in airport with nothing to declare, secretly hiding ${randInt(42, 78)} lizards in his pants.`,
+  () => `Toilet incident forces complete evacuation of floor ${randInt(2, 9)}!`,
+  () => `CEO replaces entire board of directors with AI; AI immediately fires CEO for it`,
+  () => `Burglar in Germany broke into a house, got comfortable, drank the homeowner's beer, and fell so fast asleep on the couch that police had to shake him awake to arrest him.`,
+  () => `An art museum worker in Germany was fired after he secretly hung his own painting in the gallery next to classic masterpieces because he wanted to achieve his artistic breakthrough.`,
+  () => `Firefighters in Kuwait arrived at a house fire only to discover the emergency call was triggered entirely by a highly intelligent pet parrot mimicking a smoke detector.`,
+  () => `Man tried to rob a bank in Colombia using a donkey as a getaway vehicle, but the donkey refused to move and brayed so loudly it alerted nearby police officers.`,
+  () => `Scientists tracking an eagle's migratory patterns went completely broke after the bird flew into Iran and sent thousands of text messages roaming charges back to the lab.`,
+  () => `Man named Axle makes ${randInt(18, 37)} billion dollar investment, loses it all in one day!`,
+  () => `Neighborhood watch captain reports suspicious activity: "A teenager walked by for ${randInt(8, 17)} minutes without looking at his phone!"`,
+  () => `CEO takes ${randInt(3, 7)}00% bonus to cope with the stress of firing half the staff.`,
+  () => `Accountant team discovers missing ${randInt(5, 16)} million dollars was categorized as "miscellaneous snacks"!`,
+  () => `Self-checkout machine demands a ${randInt(1, 4)}0% tip for its emotional labor.`,
+  () => `Weather forecast: 100% chance of you staying inside and looking at a screen and finding virtual newpapers.`,
+  () => `Local school disciplines child for swearing ${randInt(19, 29)} times at the principal.`,
+  () => `"I love my moneh" - Blake Lee, number one crystal pvper in the Philippines`,
+  () => `"Danger is my friend" - Gabriel Sze, newly elected president`,
+  () => `Chinese man named Zizhen with the slap superpowers hunts down misusers of speech, ${randInt(14, 34)} injured or missing!`,
+  () => `"WHO SAID THE CC!?" - Zizhen Cai, anti-speech misusing vigilante`,
+  () => `Man says CC within a one-kilometer radius of Zizhen Cai, goes missing just ${randInt(2, 5)} minutes later`,
+  () => `If you say the CC and hear strange knocking on your door, prepare your grave. - Unknown`,
+  () => `67 - Markus Palamos, great philosopher of the 21st century`,
+  () => `Local News accidentally releases fake news about school cancellation, causes riot among students, ${randInt(9, 36)} emotionally damaged`,
+  () => `Local student calculates that ${randInt(80, 95)}% of class time is spent staring at the clock.`,
+  () => `You said the CC, now Zizhen is coming`
+];
