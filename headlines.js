@@ -21,13 +21,7 @@ function pickRandom(arr) {
 const unlockedHeadlines = [
   () => `Word of the day: ${pickRandom(wordsOfTheDay)}`,
   () => `"Lowkey!" - Von Timothy, Local General of the Army`,
-  () => {
-    const bonus = (newsPerSecond * 15) + 15;
-    newspapers += bonus;
-    totalNewspapersEarned += bonus;
-    updateUI();
-    return `Behold the power of chess.`;
-  },
+  () => `Behold the power of chess.`,
   () => `Danry won the lottery!`,
   () => `A bird pooped on the president live!`,
   () => `World's Most Sigma: Von Timothy, Local General of the Army`,
@@ -65,5 +59,8 @@ const unlockedHeadlines = [
   () => `67 - Markus Palamos, great philosopher of the 21st century`,
   () => `Local News accidentally releases fake news about school cancellation, causes riot among students, ${randInt(9, 36)} emotionally damaged`,
   () => `Local student calculates that ${randInt(80, 95)}% of class time is spent staring at the clock.`,
-  () => `You said the CC, now Zizhen is coming`
+  () => `You said the CC, now Zizhen is coming`,
+  () => `Crazed man rambles about thought police and whatsamacallit, Zizhen declares "A new method to catch the unworthy".`,
+  () => `Chat says keep playing`,
+  () => `It's time to stop playing, chat`
 ];
