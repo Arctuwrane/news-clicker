@@ -19,46 +19,63 @@
       display: flex;
       flex-direction: column;
     }
-    #ticker {
+    #ticker-bar {
       background-color: #b22222;
       color: white;
-      padding: 10px 15px;
+      padding: 8px 15px;
       font-weight: bold;
       letter-spacing: 0.5px;
       flex-shrink: 0;
-      min-height: 42px;
+      min-height: 46px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 12px;
       transition: background-color 0.3s ease;
     }
-    #ticker.chess-bonus {
+    #ticker-bar.chess-bonus {
       background-color: #1e6b34;
     }
-    header {
-      padding: 12px 20px 5px;
-      flex-shrink: 0;
+    #ticker-text {
+      flex-grow: 1;
+      text-align: center;
+      cursor: pointer;
     }
-    h1 {
-      font-size: 2.2rem;
-      margin: 0 0 8px 0;
-      border-bottom: 3px double #111;
-      display: inline-block;
-      padding-bottom: 4px;
+    #skip-news-btn {
+      font-family: Georgia, serif;
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 5px 12px;
+      background-color: #f4f1ea;
+      color: #111;
+      border: 2px solid #111;
+      cursor: pointer;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    #skip-news-btn:hover {
+      background-color: #fffdf9;
+    }
+    #skip-news-btn:active {
+      transform: scale(0.95);
+    }
+    header {
+      padding: 16px 20px 5px;
+      flex-shrink: 0;
     }
     .stats-bar {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 25px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .newspaper-count {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: bold;
     }
     .rates {
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: #444;
     }
     .nav-tabs {
@@ -94,7 +111,8 @@
       justify-content: center;
     }
     #newspaper-btn {
-      font-size: 8rem;
+      font-size: 14rem;
+      line-height: 1;
       background: none;
       border: none;
       cursor: pointer;
@@ -147,14 +165,40 @@
       color: #b22222;
       padding-left: 10px;
     }
+    .footer-controls {
+      position: fixed;
+      bottom: 12px;
+      right: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+    #reset-btn {
+      font-family: Georgia, serif;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 5px 10px;
+      border: 1px solid #b22222;
+      background-color: #fffdf9;
+      color: #b22222;
+      cursor: pointer;
+    }
+    #reset-btn:hover {
+      background-color: #b22222;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
 
-  <div id="ticker">BREAKING: Printing press warms up...</div>
+  <div id="ticker-bar">
+    <div id="ticker-text" title="Hold click to pause ticker">BREAKING: Printing press warms up...</div>
+    <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
+  </div>
 
   <header>
-    <h1>Read the news</h1>
     <div class="stats-bar">
       <div class="newspaper-count">Newspapers: <span id="newspapers">0</span></div>
       <div class="rates">
@@ -175,13 +219,21 @@
     <div class="buildings-grid" id="buildings-container"></div>
   </div>
 
+  <div class="footer-controls">
+    <span id="save-status">Autosave active</span>
+    <button id="reset-btn" onclick="hardReset()">Hard Reset</button>
+  </div>
+
   <script src="headlines.js"></script>
 
   <script>
+    const SAVE_KEY = 'readTheNewsSave_v1';
+
     let newspapers = 0;
     let totalNewspapersEarned = 0;
     let newsPerClick = 1;
     let newsPerSecond = 0;
+    let isResetting = false;
 
     const costMultiplier = 1.15;
 
@@ -221,12 +273,74 @@
 
     let lastHeadlineIndex = -1;
     let tickerUnlocked = false;
+    let isTickerPaused = false;
+    let tickerInterval = null;
 
-    function updateTicker() {
+    function saveGame() {
+      if (isResetting) return;
+      const saveData = {
+        newspapers,
+        totalNewspapersEarned,
+        newsPerClick,
+        buildings: buildings.map(b => ({ id: b.id, count: b.count }))
+      };
+      localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+
+      const statusEl = document.getElementById('save-status');
+      if (statusEl) {
+        statusEl.innerText = 'Game saved';
+        setTimeout(() => {
+          if (statusEl) statusEl.innerText = 'Autosave active';
+        }, 1200);
+      }
+    }
+
+    function loadGame() {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        if (typeof data.newspapers === 'number') newspapers = data.newspapers;
+        if (typeof data.totalNewspapersEarned === 'number') totalNewspapersEarned = data.totalNewspapersEarned;
+        if (typeof data.newsPerClick === 'number') newsPerClick = data.newsPerClick;
+
+        if (Array.isArray(data.buildings)) {
+          data.buildings.forEach(savedB => {
+            const target = buildings.find(b => b.id === savedB.id);
+            if (target && typeof savedB.count === 'number') {
+              target.count = savedB.count;
+            }
+          });
+        }
+        recalculateNPS();
+        checkTickerUnlock();
+      } catch (e) {
+        console.error('Failed to load save:', e);
+      }
+    }
+
+    function hardReset() {
+      if (!confirm('Do you want to delete your save?')) return;
+      if (!confirm('Are you sure?')) return;
+
+      const sureScore = prompt('How sure are you? Answer 1 to 10');
+      if (sureScore === null || sureScore.trim() !== '10') return;
+
+      if (!confirm('Still want to do it?')) return;
+      if (!confirm('This is your last warning. There is no going back now.')) return;
+
+      isResetting = true;
+      localStorage.removeItem(SAVE_KEY);
+      location.reload();
+    }
+
+    function updateTicker(forceSkip = false) {
       if (totalNewspapersEarned < 1000) return;
+      if (isTickerPaused && !forceSkip) return;
 
-      const tickerEl = document.getElementById('ticker');
-      tickerEl.classList.remove('chess-bonus');
+      const tickerBar = document.getElementById('ticker-bar');
+      const tickerText = document.getElementById('ticker-text');
+      tickerBar.classList.remove('chess-bonus');
 
       let idx;
       do {
@@ -235,12 +349,35 @@
       lastHeadlineIndex = idx;
 
       const text = unlockedHeadlines[idx]();
-      tickerEl.innerText = text;
+      tickerText.innerText = text;
 
       if (text === "Behold the power of chess.") {
-        tickerEl.classList.add('chess-bonus');
+        tickerBar.classList.add('chess-bonus');
       }
     }
+
+    function startTickerTimer() {
+      if (tickerInterval) clearInterval(tickerInterval);
+      tickerInterval = setInterval(() => {
+        updateTicker(false);
+      }, 5000);
+    }
+
+    function skipToNextNews() {
+      if (totalNewspapersEarned < 1000) {
+        document.getElementById('ticker-text').innerText = "Unlock full news at 1,000 total newspapers!";
+        return;
+      }
+      updateTicker(true);
+      startTickerTimer();
+    }
+
+    // Hold-click on ticker text pauses automatic cycling until released
+    const tickerTextEl = document.getElementById('ticker-text');
+    tickerTextEl.addEventListener('mousedown', () => { isTickerPaused = true; });
+    tickerTextEl.addEventListener('touchstart', () => { isTickerPaused = true; }, { passive: true });
+    window.addEventListener('mouseup', () => { isTickerPaused = false; });
+    window.addEventListener('touchend', () => { isTickerPaused = false; });
 
     function formatNumber(num) {
       if (num < 1e6) {
@@ -288,6 +425,7 @@
         b.count += 1;
         recalculateNPS();
         updateUI();
+        saveGame();
       }
     }
 
@@ -298,7 +436,8 @@
     function checkTickerUnlock() {
       if (!tickerUnlocked && totalNewspapersEarned >= 1000) {
         tickerUnlocked = true;
-        updateTicker();
+        updateTicker(true);
+        startTickerTimer();
       }
     }
 
@@ -335,7 +474,9 @@
     }
 
     initBuildingsUI();
+    loadGame();
     updateUI();
+    startTickerTimer();
 
     setInterval(() => {
       const earnedThisTick = newsPerSecond / 10;
@@ -346,8 +487,10 @@
     }, 100);
 
     setInterval(() => {
-      updateTicker();
-    }, 8000);
+      saveGame();
+    }, 5000);
+
+    window.addEventListener('beforeunload', saveGame);
   </script>
 
 </body>
