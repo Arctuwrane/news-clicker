@@ -110,20 +110,26 @@
       flex-direction: column;
       justify-content: center;
     }
+    /* Wrapper handles hover/click scale while the inner button runs the Scratch sine wave */
+    #newspaper-wrapper {
+      margin: auto;
+      display: inline-block;
+      transition: transform 0.08s ease;
+    }
+    #newspaper-wrapper:hover {
+      transform: scale(1.05);
+    }
+    #newspaper-wrapper:active {
+      transform: scale(0.92);
+    }
     #newspaper-btn {
       font-size: 14rem;
       line-height: 1;
       background: none;
       border: none;
       cursor: pointer;
-      transition: transform 0.08s ease;
-      margin: auto;
-    }
-    #newspaper-btn:hover {
-      transform: scale(1.05);
-    }
-    #newspaper-btn:active {
-      transform: scale(0.92);
+      display: block;
+      will-change: transform;
     }
     .buildings-grid {
       display: grid;
@@ -212,7 +218,9 @@
   </header>
 
   <div id="view-press" class="view-section active">
-    <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper">📰</button>
+    <div id="newspaper-wrapper">
+      <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper">📰</button>
+    </div>
   </div>
 
   <div id="view-buildings" class="view-section">
@@ -342,7 +350,6 @@
       const tickerBar = document.getElementById('ticker-bar');
       const tickerText = document.getElementById('ticker-text');
 
-      // Reset any unclaimed chess bonus when moving to a new headline
       chessBonusAvailable = false;
       tickerBar.classList.remove('chess-bonus');
 
@@ -498,6 +505,18 @@
         }
       });
     }
+
+    // Scratch-style forever sine-wave idle animation
+    const newspaperBtnEl = document.getElementById('newspaper-btn');
+    const startTime = performance.now();
+
+    function animateNewspaper(now) {
+      const timer = (now - startTime) / 1000; // Scratch timer in seconds
+      const wave = Math.sin((timer * 100) * (Math.PI / 180)) * 5;
+      newspaperBtnEl.style.transform = `translateY(${-wave}px) rotate(${wave}deg)`;
+      requestAnimationFrame(animateNewspaper);
+    }
+    requestAnimationFrame(animateNewspaper);
 
     initBuildingsUI();
     loadGame();
