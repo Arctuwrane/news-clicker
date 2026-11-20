@@ -1,2 +1,2 @@
-# news-clicker
+# News Clicker
 Rise the ranks and become the most powerful news company; shape the world and become what we behold!
