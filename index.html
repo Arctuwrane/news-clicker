@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Read the news</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="Hp73IszKi9uEYGRZyN0Pf2YRb2ZnEByrJenAnwKdVwg" />
+  <title>News Clicker</title>
+  <meta name="description" content="News Clicker is a minimalist newspaper clicker idle game. Print newspapers, unlock hilarious breaking news headlines, and build a global media empire.">
+  <meta name="keywords" content="news clicker, newspaper clicker, idle game, incremental game, browser clicker game">
   <style>
     * {
       box-sizing: border-box;
@@ -143,22 +147,34 @@
       transform: scale(0.92);
     }
     #newspaper-btn {
-      font-size: 14rem;
-      line-height: 1;
+      width: 230px;
+      height: 230px;
+      padding: 0;
       background: none;
       border: none;
       cursor: pointer;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       will-change: transform;
+    }
+    #newspaper-btn svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.16));
     }
     .newspaper-clone {
       position: fixed;
-      font-size: 4rem;
-      line-height: 1;
+      width: 64px;
+      height: 64px;
       pointer-events: none;
       user-select: none;
       z-index: 1;
       will-change: transform, opacity;
+    }
+    .newspaper-clone svg {
+      width: 100%;
+      height: 100%;
     }
     .buildings-grid {
       display: grid;
@@ -230,7 +246,7 @@
 <body>
 
   <div id="ticker-bar">
-    <div id="version-badge">v1.0.2</div>
+    <div id="version-badge">v1.0.3</div>
     <div id="ticker-text" title="Hold click to pause ticker (or click during chess event!)">BREAKING: Printing press warms up...</div>
     <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
   </div>
@@ -250,7 +266,21 @@
 
   <div id="view-press" class="view-section active">
     <div id="newspaper-wrapper">
-      <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper">📰</button>
+      <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper" aria-label="Print a newspaper">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="26" y="24" width="80" height="82" rx="4" fill="#dcd4c3" stroke="#111" stroke-width="4.5"/>
+          <rect x="14" y="14" width="80" height="84" rx="4" fill="#fffdf9" stroke="#111" stroke-width="4.5"/>
+          <rect x="24" y="24" width="60" height="12" rx="2" fill="#111"/>
+          <line x1="24" y1="42" x2="84" y2="42" stroke="#111" stroke-width="3"/>
+          <rect x="24" y="49" width="28" height="24" rx="2" fill="#d5cbb8" stroke="#111" stroke-width="3"/>
+          <line x1="59" y1="51" x2="84" y2="51" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="59" y1="59" x2="84" y2="59" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="59" y1="67" x2="84" y2="67" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="59" y1="75" x2="78" y2="75" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="24" y1="82" x2="84" y2="82" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="24" y1="89" x2="72" y2="89" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -309,6 +339,22 @@
       { id: 'conglomerate', name: 'Media Conglomerate', nps: 8325, baseCost: 25000000, count: 0 },
       { id: 'network', name: 'Global News Network', nps: 48500, baseCost: 390000000, count: 0 }
     ];
+
+    const NEWSPAPER_SVG = `
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <rect x="26" y="24" width="80" height="82" rx="4" fill="#dcd4c3" stroke="#111" stroke-width="4.5"/>
+        <rect x="14" y="14" width="80" height="84" rx="4" fill="#fffdf9" stroke="#111" stroke-width="4.5"/>
+        <rect x="24" y="24" width="60" height="12" rx="2" fill="#111"/>
+        <line x1="24" y1="42" x2="84" y2="42" stroke="#111" stroke-width="3"/>
+        <rect x="24" y="49" width="28" height="24" rx="2" fill="#d5cbb8" stroke="#111" stroke-width="3"/>
+        <line x1="59" y1="51" x2="84" y2="51" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="59" y1="59" x2="84" y2="59" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="59" y1="67" x2="84" y2="67" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="59" y1="75" x2="78" y2="75" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="24" y1="82" x2="84" y2="82" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="24" y1="89" x2="72" y2="89" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+      </svg>
+    `;
 
     let recentHeadlines = [];
     const HEADLINE_COOLDOWN = 10;
@@ -488,7 +534,7 @@
 
       const clone = document.createElement('div');
       clone.className = 'newspaper-clone';
-      clone.innerText = '📰';
+      clone.innerHTML = NEWSPAPER_SVG;
 
       let x = centerX;
       let y = centerY;
@@ -514,7 +560,7 @@
         y += vy;
         rotation += vRot;
 
-        const halfSize = 28;
+        const halfSize = 32;
         const touchedEdge =
           x - halfSize <= 0 ||
           x + halfSize >= window.innerWidth ||
