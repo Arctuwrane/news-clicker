@@ -136,15 +136,29 @@
     #newspaper-wrapper {
       margin: auto;
       display: inline-block;
-      transition: transform 0.08s ease;
       position: relative;
       z-index: 2;
+      will-change: transform;
     }
-    #newspaper-wrapper:hover {
-      transform: scale(1.05);
+    @keyframes newspaper-squish {
+      0% {
+        transform: scale(1, 1);
+      }
+      28% {
+        transform: scale(1.18, 0.82);
+      }
+      58% {
+        transform: scale(0.94, 1.07);
+      }
+      80% {
+        transform: scale(1.03, 0.97);
+      }
+      100% {
+        transform: scale(1, 1);
+      }
     }
-    #newspaper-wrapper:active {
-      transform: scale(0.92);
+    #newspaper-wrapper.squish {
+      animation: newspaper-squish 0.26s cubic-bezier(0.25, 1, 0.5, 1);
     }
     #newspaper-btn {
       width: 230px;
@@ -157,11 +171,16 @@
       align-items: center;
       justify-content: center;
       will-change: transform;
+      outline: none;
     }
     #newspaper-btn svg {
       width: 100%;
       height: 100%;
       filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.16));
+      transition: transform 0.12s ease;
+    }
+    #newspaper-btn:hover svg {
+      transform: scale(1.05);
     }
     .newspaper-clone {
       position: fixed;
@@ -246,7 +265,7 @@
 <body>
 
   <div id="ticker-bar">
-    <div id="version-badge">v1.0.3</div>
+    <div id="version-badge">v1.0.4</div>
     <div id="ticker-text" title="Hold click to pause ticker (or click during chess event!)">BREAKING: Printing press warms up...</div>
     <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
   </div>
@@ -526,6 +545,13 @@
       document.getElementById('tab-' + tabName).classList.add('active');
     }
 
+    function triggerSquish() {
+      const wrapper = document.getElementById('newspaper-wrapper');
+      wrapper.classList.remove('squish');
+      void wrapper.offsetWidth; // Force reflow so rapid clicks restart the squish immediately
+      wrapper.classList.add('squish');
+    }
+
     function spawnNewspaperClone() {
       const btn = document.getElementById('newspaper-btn');
       const rect = btn.getBoundingClientRect();
@@ -590,6 +616,7 @@
     function printNewspaper() {
       newspapers += newsPerClick;
       totalNewspapersEarned += newsPerClick;
+      triggerSquish();
       spawnNewspaperClone();
       checkTickerUnlock();
       updateUI();
