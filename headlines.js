@@ -63,6 +63,9 @@ const unlockedHeadlines = [
   () => `Crazed man rambles about thought police and whatsamacallit, Zizhen declares "A new method to catch the unworthy".`,
   () => `Chat says keep playing`,
   () => `It's time to stop playing, chat`,
+  () => '"Wise men learn more from fools than fools from the wise." - A Wise Man',
+  () => '"A wise man changes his mind, a fool never will—especially when picking where to eat." - A Wise Man',
+  () => '"x = (-b ± √(b² - 4ac)) / 2a" - A Wise Man',
 
   // --- Click & Paperboy Upgrade-Locked Headlines ---
   {
