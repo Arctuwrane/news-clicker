@@ -30,6 +30,7 @@
         <div class="nav-tabs">
           <button id="tab-press" class="tab-btn active" onclick="switchTab('press')">📰 Printing Press</button>
           <button id="tab-buildings" class="tab-btn" onclick="switchTab('buildings')">🏢 Buy Buildings</button>
+          <button id="tab-stats" class="tab-btn" onclick="switchTab('stats')">📊 Stats</button>
         </div>
       </header>
 
@@ -56,6 +57,43 @@
       <div id="view-buildings" class="view-section">
         <div class="buildings-grid" id="buildings-container"></div>
       </div>
+
+      <div id="view-stats" class="view-section">
+        <div class="stats-header-row">
+          <h2>Company Statistics</h2>
+          <button class="back-btn" onclick="switchTab('press')">← Back to Game</button>
+        </div>
+
+        <div class="stats-summary-grid">
+          <div class="stat-box">
+            <div class="stat-label">All-Time Newspapers Earned</div>
+            <div class="stat-value" id="stat-all-time-news">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Manual Clicked Newspapers Earned</div>
+            <div class="stat-value" id="stat-manual-news">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Upgrades Bought</div>
+            <div class="stat-value" id="stat-upgrades-bought">0 / 30</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Buildings Bought</div>
+            <div class="stat-value" id="stat-buildings-bought">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">All-Time Run Age</div>
+            <div class="stat-value" id="stat-run-age">0s</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Newspaper Clicks</div>
+            <div class="stat-value" id="stat-clicks">0</div>
+          </div>
+        </div>
+
+        <h3 class="purchased-upgrades-title">Purchased Upgrades</h3>
+        <div class="purchased-upgrades-grid" id="purchased-upgrades-list"></div>
+      </div>
     </div>
 
     <aside id="upgrades-panel">
@@ -80,6 +118,9 @@
 
     let newspapers = 0;
     let totalNewspapersEarned = 0;
+    let manualNewspapersEarned = 0;
+    let totalNewspaperClicks = 0;
+    let runStartTime = Date.now();
     let newsPerClick = 1;
     let newsPerSecond = 0;
     let isResetting = false;
@@ -162,9 +203,8 @@
 
     function getEffectivePaperboyNps() {
       const paperboyBuilding = buildings.find(b => b.id === 'paperboy');
-      let rate = paperboyBuilding.baseNps; // 0.1
+      let rate = paperboyBuilding.baseNps;
 
-      // Paperboy multipliers
       if (hasUpgrade('papergirls')) rate *= 2;
       if (hasUpgrade('satchels')) rate *= 2;
       if (hasUpgrade('wagons')) rate *= 2.5;
@@ -173,7 +213,6 @@
         rate *= (1 + paperboyBuilding.count * 0.01);
       }
 
-      // Bikes & Bikes-scaling upgrades (applied after multipliers)
       if (hasUpgrade('bikes')) {
         let bikePower = 0.1;
         if (hasUpgrade('cars')) bikePower = 0.5;
@@ -196,17 +235,13 @@
 
     function getEffectiveKioskNps() {
       const kioskBuilding = buildings.find(b => b.id === 'kiosk');
-      let rate = kioskBuilding.baseNps; // 1
-
-      // Each purchased Corner Kiosk upgrade doubles production
+      let rate = kioskBuilding.baseNps;
       const purchasedKioskCount = kioskUpgrades.filter(u => u.purchased).length;
       rate *= Math.pow(2, purchasedKioskCount);
-
       return rate;
     }
 
     function recalculateStats() {
-      // 1. Click power calculation
       let npc = 1;
       if (hasUpgrade('low_volume_inking')) npc += 0.5;
       if (hasUpgrade('newspaper_recycling')) npc += 1;
@@ -230,7 +265,6 @@
       if (hasUpgrade('fingerdash_method')) npc *= 5;
       newsPerClick = npc;
 
-      // 2. Building NPS & total NPS calculation
       buildings.forEach(b => {
         if (b.id === 'paperboy') {
           b.nps = getEffectivePaperboyNps();
@@ -247,6 +281,9 @@
     function resetGameStateToDefaults() {
       newspapers = 0;
       totalNewspapersEarned = 0;
+      manualNewspapersEarned = 0;
+      totalNewspaperClicks = 0;
+      runStartTime = Date.now();
       newsPerClick = 1;
       newsPerSecond = 0;
       forcedNextHeadline = null;
@@ -266,6 +303,9 @@
       const saveData = {
         newspapers,
         totalNewspapersEarned,
+        manualNewspapersEarned,
+        totalNewspaperClicks,
+        runStartTime,
         newsPerClick,
         buildings: buildings.map(b => ({ id: b.id, count: b.count })),
         purchasedClickUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id),
@@ -291,6 +331,9 @@
         const data = JSON.parse(raw);
         if (typeof data.newspapers === 'number') newspapers = data.newspapers;
         if (typeof data.totalNewspapersEarned === 'number') totalNewspapersEarned = data.totalNewspapersEarned;
+        if (typeof data.manualNewspapersEarned === 'number') manualNewspapersEarned = data.manualNewspapersEarned;
+        if (typeof data.totalNewspaperClicks === 'number') totalNewspaperClicks = data.totalNewspaperClicks;
+        if (typeof data.runStartTime === 'number') runStartTime = data.runStartTime;
 
         if (Array.isArray(data.buildings)) {
           data.buildings.forEach(savedB => {
@@ -356,14 +399,12 @@
       chessBonusAvailable = false;
       tickerBar.classList.remove('chess-bonus');
 
-      // Handle chained follow-up headlines (e.g., Typewriters broken vowels -> vowels back)
       if (forcedNextHeadline) {
         tickerText.innerText = forcedNextHeadline;
         forcedNextHeadline = null;
         return;
       }
 
-      // Filter pool to base headlines + unlocked upgrade headlines + extra conditions
       const availablePool = unlockedHeadlines
         .map((entry, idx) => ({ entry, idx }))
         .filter(({ entry }) => {
@@ -459,6 +500,21 @@
       return formatNumber(num);
     }
 
+    function formatDuration(ms) {
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      const parts = [];
+      if (days > 0) parts.push(`${days}d`);
+      if (hours > 0 || days > 0) parts.push(`${hours}h`);
+      if (minutes > 0 || hours > 0 || days > 0) parts.push(`${minutes}m`);
+      parts.push(`${seconds}s`);
+      return parts.join(' ');
+    }
+
     function getBuildingCost(b) {
       return Math.ceil(b.baseCost * Math.pow(costMultiplier, b.count));
     }
@@ -466,11 +522,59 @@
     function switchTab(tabName) {
       document.getElementById('view-press').classList.remove('active');
       document.getElementById('view-buildings').classList.remove('active');
+      document.getElementById('view-stats').classList.remove('active');
       document.getElementById('tab-press').classList.remove('active');
       document.getElementById('tab-buildings').classList.remove('active');
+      document.getElementById('tab-stats').classList.remove('active');
 
       document.getElementById('view-' + tabName).classList.add('active');
       document.getElementById('tab-' + tabName).classList.add('active');
+
+      if (tabName === 'stats') {
+        renderPurchasedUpgrades();
+        updateStatsUI();
+      }
+    }
+
+    function renderPurchasedUpgrades() {
+      const container = document.getElementById('purchased-upgrades-list');
+      const allPurchased = [
+        ...clickUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Click Upgrade' })),
+        ...paperboyUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Paperboy Upgrade' })),
+        ...kioskUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Corner Kiosk Upgrade' }))
+      ];
+
+      if (allPurchased.length === 0) {
+        container.innerHTML = '<div class="all-bought-msg">No upgrades purchased yet.</div>';
+        return;
+      }
+
+      container.innerHTML = allPurchased.map(upg => `
+        <div class="purchased-upgrade-item">
+          <div class="u-category">${upg.category}</div>
+          <div class="u-header">${upg.name}</div>
+          <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+          <div class="u-desc">${upg.description}</div>
+          <div class="u-quote">${upg.quote}</div>
+        </div>
+      `).join('');
+    }
+
+    function updateStatsUI() {
+      const totalUpgrades = clickUpgrades.length + paperboyUpgrades.length + kioskUpgrades.length;
+      const boughtUpgrades =
+        clickUpgrades.filter(u => u.purchased).length +
+        paperboyUpgrades.filter(u => u.purchased).length +
+        kioskUpgrades.filter(u => u.purchased).length;
+
+      const totalBuildings = buildings.reduce((sum, b) => sum + b.count, 0);
+
+      document.getElementById('stat-all-time-news').innerText = formatNumber(totalNewspapersEarned);
+      document.getElementById('stat-manual-news').innerText = formatNumber(manualNewspapersEarned);
+      document.getElementById('stat-upgrades-bought').innerText = `${boughtUpgrades} / ${totalUpgrades}`;
+      document.getElementById('stat-buildings-bought').innerText = totalBuildings.toLocaleString();
+      document.getElementById('stat-run-age').innerText = formatDuration(Date.now() - runStartTime);
+      document.getElementById('stat-clicks').innerText = totalNewspaperClicks.toLocaleString();
     }
 
     function triggerSquish() {
@@ -544,6 +648,8 @@
     function printNewspaper() {
       newspapers += newsPerClick;
       totalNewspapersEarned += newsPerClick;
+      manualNewspapersEarned += newsPerClick;
+      totalNewspaperClicks += 1;
       triggerSquish();
       spawnNewspaperClone();
       checkTickerUnlock();
@@ -576,6 +682,7 @@
         upg.purchased = true;
         recalculateStats();
         renderUpgradesSidebar();
+        renderPurchasedUpgrades();
         updateUI();
         saveGame();
       }
@@ -714,6 +821,10 @@
       if (nextKioskUpg && kioskCard) {
         kioskCard.classList.toggle('disabled', newspapers < nextKioskUpg.cost || !isUpgradeUnlocked(nextKioskUpg));
       }
+
+      if (document.getElementById('view-stats').classList.contains('active')) {
+        updateStatsUI();
+      }
     }
 
     const newspaperBtnEl = document.getElementById('newspaper-btn');
@@ -732,6 +843,7 @@
     loadGame();
     recalculateStats();
     renderUpgradesSidebar();
+    renderPurchasedUpgrades();
     updateUI();
     startTickerTimer();
 
