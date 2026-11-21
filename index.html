@@ -110,14 +110,14 @@
     ];
 
     const buildings = [
-      { id: 'paperboy', name: 'Paperboy', nps: 0.1, baseCost: 20, count: 0 },
-      { id: 'kiosk', name: 'Corner Kiosk', nps: 1, baseCost: 150, count: 0 },
-      { id: 'truck', name: 'Cargo Truck', nps: 9, baseCost: 2250, count: 0 },
-      { id: 'press', name: 'Printing Press', nps: 64, baseCost: 17535, count: 0 },
-      { id: 'mill', name: 'Paper Mill', nps: 308, baseCost: 165000, count: 0 },
-      { id: 'hub', name: 'Distribution Hub', nps: 1455, baseCost: 1800000, count: 0 },
-      { id: 'conglomerate', name: 'Media Conglomerate', nps: 8325, baseCost: 25000000, count: 0 },
-      { id: 'network', name: 'Global News Network', nps: 48500, baseCost: 390000000, count: 0 }
+      { id: 'paperboy', name: 'Paperboy', baseNps: 0.1, nps: 0.1, baseCost: 20, count: 0 },
+      { id: 'kiosk', name: 'Corner Kiosk', baseNps: 1, nps: 1, baseCost: 150, count: 0 },
+      { id: 'truck', name: 'Cargo Truck', baseNps: 9, nps: 9, baseCost: 2250, count: 0 },
+      { id: 'press', name: 'Printing Press', baseNps: 64, nps: 64, baseCost: 17535, count: 0 },
+      { id: 'mill', name: 'Paper Mill', baseNps: 308, nps: 308, baseCost: 165000, count: 0 },
+      { id: 'hub', name: 'Distribution Hub', baseNps: 1455, nps: 1455, baseCost: 1800000, count: 0 },
+      { id: 'conglomerate', name: 'Media Conglomerate', baseNps: 8325, nps: 8325, baseCost: 25000000, count: 0 },
+      { id: 'network', name: 'Global News Network', baseNps: 48500, nps: 48500, baseCost: 390000000, count: 0 }
     ];
 
     const NEWSPAPER_SVG = `
@@ -144,11 +144,46 @@
     let chessBonusAvailable = false;
 
     function hasUpgrade(id) {
-      const upg = clickUpgrades.find(u => u.id === id);
-      return upg ? upg.purchased : false;
+      return clickUpgrades.some(u => u.id === id && u.purchased) ||
+             paperboyUpgrades.some(u => u.id === id && u.purchased);
+    }
+
+    function getEffectivePaperboyNps() {
+      const paperboyBuilding = buildings.find(b => b.id === 'paperboy');
+      let rate = paperboyBuilding.baseNps; // 0.1
+
+      // Paperboy multipliers
+      if (hasUpgrade('papergirls')) rate *= 2;
+      if (hasUpgrade('satchels')) rate *= 2;
+      if (hasUpgrade('wagons')) rate *= 2.5;
+      if (hasUpgrade('sari_sari_wheels')) rate *= 5;
+      if (hasUpgrade('paperboy_teaming')) {
+        rate *= (1 + paperboyBuilding.count * 0.01);
+      }
+
+      // Bikes & Bikes-scaling upgrades (applied after multipliers)
+      if (hasUpgrade('bikes')) {
+        let bikePower = 0.1;
+        if (hasUpgrade('cars')) bikePower = 0.5;
+        if (hasUpgrade('private_jets')) bikePower = 5;
+        if (hasUpgrade('the_paper_fleet')) bikePower = 100;
+        if (hasUpgrade('perfect_vision_training')) bikePower = 2000;
+        if (hasUpgrade('supreme_intellect')) bikePower = 40000;
+
+        const includePaperboys = hasUpgrade('the_paper_fleet');
+        const eligibleBuildings = buildings.reduce((sum, b) => {
+          if (!includePaperboys && b.id === 'paperboy') return sum;
+          return sum + b.count;
+        }, 0);
+
+        rate += eligibleBuildings * bikePower;
+      }
+
+      return rate;
     }
 
     function recalculateStats() {
+      // 1. Click power calculation
       let npc = 1;
       if (hasUpgrade('low_volume_inking')) npc += 0.5;
       if (hasUpgrade('newspaper_recycling')) npc += 1;
@@ -170,18 +205,33 @@
       }
 
       if (hasUpgrade('fingerdash_method')) npc *= 5;
-
       newsPerClick = npc;
 
-      const paperboyCount = buildings.find(b => b.id === 'paperboy').count;
-      const paperboyMultiplier = hasUpgrade('paperboy_teaming') ? (1 + paperboyCount * 0.01) : 1;
-
-      newsPerSecond = buildings.reduce((total, b) => {
+      // 2. Building NPS & total NPS calculation
+      buildings.forEach(b => {
         if (b.id === 'paperboy') {
-          return total + (b.nps * b.count * paperboyMultiplier);
+          b.nps = getEffectivePaperboyNps();
+        } else {
+          b.nps = b.baseNps;
         }
-        return total + (b.nps * b.count);
-      }, 0);
+      });
+
+      newsPerSecond = buildings.reduce((total, b) => total + (b.nps * b.count), 0);
+    }
+
+    function resetGameStateToDefaults() {
+      newspapers = 0;
+      totalNewspapersEarned = 0;
+      newsPerClick = 1;
+      newsPerSecond = 0;
+
+      buildings.forEach(b => {
+        b.count = 0;
+        b.nps = b.baseNps;
+      });
+
+      clickUpgrades.forEach(u => { u.purchased = false; });
+      paperboyUpgrades.forEach(u => { u.purchased = false; });
     }
 
     function saveGame() {
@@ -191,7 +241,8 @@
         totalNewspapersEarned,
         newsPerClick,
         buildings: buildings.map(b => ({ id: b.id, count: b.count })),
-        purchasedUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id)
+        purchasedClickUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id),
+        purchasedPaperboyUpgrades: paperboyUpgrades.filter(u => u.purchased).map(u => u.id)
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
 
@@ -205,6 +256,7 @@
     }
 
     function loadGame() {
+      resetGameStateToDefaults();
       const raw = localStorage.getItem(SAVE_KEY);
       if (!raw) return;
       try {
@@ -221,9 +273,18 @@
           });
         }
 
-        if (Array.isArray(data.purchasedUpgrades)) {
-          data.purchasedUpgrades.forEach(id => {
+        // Backward compatibility with v1 save key + new separated keys
+        const savedClicks = data.purchasedClickUpgrades || data.purchasedUpgrades || [];
+        if (Array.isArray(savedClicks)) {
+          savedClicks.forEach(id => {
             const target = clickUpgrades.find(u => u.id === id);
+            if (target) target.purchased = true;
+          });
+        }
+
+        if (Array.isArray(data.purchasedPaperboyUpgrades)) {
+          data.purchasedPaperboyUpgrades.forEach(id => {
+            const target = paperboyUpgrades.find(u => u.id === id);
             if (target) target.purchased = true;
           });
         }
@@ -246,6 +307,7 @@
       if (!confirm('This is your last warning. There is no going back now.')) return;
 
       isResetting = true;
+      resetGameStateToDefaults();
       localStorage.removeItem(SAVE_KEY);
       location.reload();
     }
@@ -444,8 +506,9 @@
       }
     }
 
-    function buyUpgrade(index) {
-      const upg = clickUpgrades[index];
+    function buyUpgrade(chain, index) {
+      const list = chain === 'click' ? clickUpgrades : paperboyUpgrades;
+      const upg = list[index];
       if (!upg || upg.purchased) return;
       if (newspapers >= upg.cost) {
         newspapers -= upg.cost;
@@ -459,21 +522,42 @@
 
     function renderUpgradesSidebar() {
       const sidebar = document.getElementById('upgrades-sidebar');
-      const nextIndex = clickUpgrades.findIndex(u => !u.purchased);
+      const nextClickIndex = clickUpgrades.findIndex(u => !u.purchased);
+      const nextPaperboyIndex = paperboyUpgrades.findIndex(u => !u.purchased);
 
-      if (nextIndex === -1) {
-        sidebar.innerHTML = '<div class="all-bought-msg">All click upgrades purchased!</div>';
-        return;
+      let html = '';
+
+      if (nextClickIndex !== -1) {
+        const upg = clickUpgrades[nextClickIndex];
+        html += `
+          <div class="upgrade-card" id="active-click-upgrade" onclick="buyUpgrade('click', ${nextClickIndex})">
+            <div class="u-category">Click Upgrade</div>
+            <div class="u-header">${upg.name}</div>
+            <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+            <div class="u-desc">${upg.description}</div>
+            <div class="u-quote">${upg.quote}</div>
+          </div>
+        `;
       }
 
-      const upg = clickUpgrades[nextIndex];
-      sidebar.innerHTML = `
-        <div class="upgrade-card" id="active-upgrade-card" onclick="buyUpgrade(${nextIndex})">
-          <div class="u-header">${upg.name}</div>
-          <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
-          <div class="u-desc">${upg.description}</div>
-        </div>
-      `;
+      if (nextPaperboyIndex !== -1) {
+        const upg = paperboyUpgrades[nextPaperboyIndex];
+        html += `
+          <div class="upgrade-card" id="active-paperboy-upgrade" onclick="buyUpgrade('paperboy', ${nextPaperboyIndex})">
+            <div class="u-category">Paperboy Upgrade</div>
+            <div class="u-header">${upg.name}</div>
+            <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+            <div class="u-desc">${upg.description}</div>
+            <div class="u-quote">${upg.quote}</div>
+          </div>
+        `;
+      }
+
+      if (!html) {
+        html = '<div class="all-bought-msg">All upgrades purchased!</div>';
+      }
+
+      sidebar.innerHTML = html;
     }
 
     function checkTickerUnlock() {
@@ -490,7 +574,7 @@
         <div class="building-card" id="b-card-${index}" onclick="buyBuilding(${index})">
           <div class="b-info">
             <h3>${b.name}</h3>
-            <p>Cost: <span id="b-cost-${index}">${formatNumber(b.baseCost)}</span> | +<span id="b-rate-${index}">${formatRate(b.nps)}</span> n/s</p>
+            <p>Cost: <span id="b-cost-${index}">${formatNumber(b.baseCost)}</span> | +<span id="b-rate-${index}">${formatRate(b.baseNps)}</span> n/s</p>
           </div>
           <div class="b-owned" id="b-count-${index}">0</div>
         </div>
@@ -502,16 +586,11 @@
       document.getElementById('npc').innerText = formatRate(newsPerClick);
       document.getElementById('nps').innerText = formatRate(newsPerSecond);
 
-      const paperboyCount = buildings.find(b => b.id === 'paperboy').count;
-      const paperboyMultiplier = hasUpgrade('paperboy_teaming') ? (1 + paperboyCount * 0.01) : 1;
-
       buildings.forEach((b, index) => {
         const cost = getBuildingCost(b);
         document.getElementById(`b-cost-${index}`).innerText = formatNumber(cost);
         document.getElementById(`b-count-${index}`).innerText = b.count;
-
-        const effectiveRate = b.id === 'paperboy' ? b.nps * paperboyMultiplier : b.nps;
-        document.getElementById(`b-rate-${index}`).innerText = formatRate(effectiveRate);
+        document.getElementById(`b-rate-${index}`).innerText = formatRate(b.nps);
 
         const card = document.getElementById(`b-card-${index}`);
         if (newspapers >= cost) {
@@ -521,14 +600,16 @@
         }
       });
 
-      const nextUpg = clickUpgrades.find(u => !u.purchased);
-      const upgCard = document.getElementById('active-upgrade-card');
-      if (nextUpg && upgCard) {
-        if (newspapers >= nextUpg.cost) {
-          upgCard.classList.remove('disabled');
-        } else {
-          upgCard.classList.add('disabled');
-        }
+      const nextClickUpg = clickUpgrades.find(u => !u.purchased);
+      const clickCard = document.getElementById('active-click-upgrade');
+      if (nextClickUpg && clickCard) {
+        clickCard.classList.toggle('disabled', newspapers < nextClickUpg.cost);
+      }
+
+      const nextPaperboyUpg = paperboyUpgrades.find(u => !u.purchased);
+      const paperboyCard = document.getElementById('active-paperboy-upgrade');
+      if (nextPaperboyUpg && paperboyCard) {
+        paperboyCard.classList.toggle('disabled', newspapers < nextPaperboyUpg.cost);
       }
     }
 
