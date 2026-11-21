@@ -142,6 +142,7 @@
     let isTickerPaused = false;
     let tickerInterval = null;
     let chessBonusAvailable = false;
+    let forcedNextHeadline = null;
 
     function hasUpgrade(id) {
       return clickUpgrades.some(u => u.id === id && u.purchased) ||
@@ -224,6 +225,7 @@
       totalNewspapersEarned = 0;
       newsPerClick = 1;
       newsPerSecond = 0;
+      forcedNextHeadline = null;
 
       buildings.forEach(b => {
         b.count = 0;
@@ -273,7 +275,6 @@
           });
         }
 
-        // Backward compatibility with v1 save key + new separated keys
         const savedClicks = data.purchasedClickUpgrades || data.purchasedUpgrades || [];
         if (Array.isArray(savedClicks)) {
           savedClicks.forEach(id => {
@@ -322,23 +323,43 @@
       chessBonusAvailable = false;
       tickerBar.classList.remove('chess-bonus');
 
-      const maxHistory = Math.min(HEADLINE_COOLDOWN, unlockedHeadlines.length - 1);
-      let idx;
+      // Handle chained follow-up headlines (e.g., Typewriters broken vowels -> vowels back)
+      if (forcedNextHeadline) {
+        tickerText.innerText = forcedNextHeadline;
+        forcedNextHeadline = null;
+        return;
+      }
+
+      // Filter pool to base headlines + unlocked upgrade headlines
+      const availablePool = unlockedHeadlines
+        .map((entry, idx) => ({ entry, idx }))
+        .filter(({ entry }) => {
+          if (typeof entry === 'function') return true;
+          return !entry.requires || hasUpgrade(entry.requires);
+        });
+
+      const maxHistory = Math.min(HEADLINE_COOLDOWN, availablePool.length - 1);
+      let chosen;
       let text;
+
       do {
-        idx = Math.floor(Math.random() * unlockedHeadlines.length);
-        text = unlockedHeadlines[idx]();
+        chosen = availablePool[Math.floor(Math.random() * availablePool.length)];
+        text = typeof chosen.entry === 'function' ? chosen.entry() : chosen.entry.text();
       } while (
-        (recentHeadlines.includes(idx) && unlockedHeadlines.length > 1) ||
+        (recentHeadlines.includes(chosen.idx) && availablePool.length > 1) ||
         (isManualSkip && text === "Behold the power of chess.")
       );
 
-      recentHeadlines.push(idx);
+      recentHeadlines.push(chosen.idx);
       if (recentHeadlines.length > maxHistory) {
         recentHeadlines.shift();
       }
 
       tickerText.innerText = text;
+
+      if (typeof chosen.entry === 'object' && chosen.entry.nextHeadline) {
+        forcedNextHeadline = chosen.entry.nextHeadline;
+      }
 
       if (!isManualSkip && text === "Behold the power of chess.") {
         chessBonusAvailable = true;
