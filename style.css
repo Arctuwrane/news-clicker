@@ -217,12 +217,24 @@ header {
   cursor: pointer;
   transition: background-color 0.1s;
 }
-.building-card:hover:not(.disabled) {
+.building-card:hover:not(.disabled):not(.mystery) {
   background-color: #eae4d7;
 }
 .building-card.disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+.building-card.mystery {
+  background-color: #c9c3b8;
+  color: #555;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.building-card.mystery .b-info h3 {
+  letter-spacing: 2px;
+}
+.building-card.mystery .b-owned {
+  color: #666;
 }
 .b-info h3 {
   margin: 0 0 3px 0;
@@ -287,6 +299,14 @@ header {
   opacity: 0.55;
   cursor: not-allowed;
 }
+.u-category {
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #666;
+  margin-bottom: 2px;
+}
 .u-header {
   margin: 0 0 4px 0;
   font-size: 1rem;
@@ -305,6 +325,15 @@ header {
   margin: 0;
   font-size: 0.8rem;
   color: #333;
+  line-height: 1.25;
+}
+.u-quote {
+  margin: 6px 0 0 0;
+  padding-top: 5px;
+  border-top: 1px dashed #c8beaa;
+  font-size: 0.76rem;
+  font-style: italic;
+  color: #555;
   line-height: 1.25;
 }
 .all-bought-msg {
