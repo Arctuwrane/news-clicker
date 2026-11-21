@@ -13,7 +13,10 @@
 <body>
 
   <div id="ticker-bar">
-    <div id="version-badge"></div>
+    <div class="ticker-left-group">
+      <div id="version-badge"></div>
+      <button id="tab-stats" onclick="switchTab('stats')">📊 Stats</button>
+    </div>
     <div id="ticker-text" title="Hold click to pause ticker (or click during chess event!)">BREAKING: Printing press warms up...</div>
     <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
   </div>
@@ -30,7 +33,6 @@
         <div class="nav-tabs">
           <button id="tab-press" class="tab-btn active" onclick="switchTab('press')">📰 Printing Press</button>
           <button id="tab-buildings" class="tab-btn" onclick="switchTab('buildings')">🏢 Buy Buildings</button>
-          <button id="tab-stats" class="tab-btn" onclick="switchTab('stats')">📊 Stats</button>
         </div>
       </header>
 
