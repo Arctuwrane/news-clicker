@@ -163,7 +163,7 @@ const unlockedHeadlines = [
   },
   {
     requires: 'blind_boxes',
-    text: () => `New blind box series opens, causes unintended damage to corner kiosk`
+    text: () => `New blind box series opens, causes riot and unintended damage to corner kiosk`
   },
   {
     requires: 'strategic_placements',
