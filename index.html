@@ -594,7 +594,7 @@
       container.innerHTML = buildings.map((b, index) => `
         <div class="building-card" id="b-card-${index}" onclick="buyBuilding(${index})">
           <div class="b-info">
-            <h3>${b.name}</h3>
+            <h3 id="b-name-${index}">${b.name}</h3>
             <p>Cost: <span id="b-cost-${index}">${formatNumber(b.baseCost)}</span> | +<span id="b-rate-${index}">${formatRate(b.baseNps)}</span> n/s</p>
           </div>
           <div class="b-owned" id="b-count-${index}">0</div>
@@ -609,15 +609,33 @@
 
       buildings.forEach((b, index) => {
         const cost = getBuildingCost(b);
-        document.getElementById(`b-cost-${index}`).innerText = formatNumber(cost);
-        document.getElementById(`b-count-${index}`).innerText = b.count;
-        document.getElementById(`b-rate-${index}`).innerText = formatRate(b.nps);
-
         const card = document.getElementById(`b-card-${index}`);
-        if (newspapers >= cost) {
+        const nameEl = document.getElementById(`b-name-${index}`);
+        const costEl = document.getElementById(`b-cost-${index}`);
+        const rateEl = document.getElementById(`b-rate-${index}`);
+        const countEl = document.getElementById(`b-count-${index}`);
+
+        const isMystery = b.count === 0 && (newspapers * 2) < cost;
+
+        if (isMystery) {
+          card.classList.add('mystery');
           card.classList.remove('disabled');
+          nameEl.innerText = '???';
+          costEl.innerText = '???';
+          rateEl.innerText = '???';
+          countEl.innerText = '?';
         } else {
-          card.classList.add('disabled');
+          card.classList.remove('mystery');
+          nameEl.innerText = b.name;
+          costEl.innerText = formatNumber(cost);
+          rateEl.innerText = formatRate(b.nps);
+          countEl.innerText = b.count;
+
+          if (newspapers >= cost) {
+            card.classList.remove('disabled');
+          } else {
+            card.classList.add('disabled');
+          }
         }
       });
 
