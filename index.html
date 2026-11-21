@@ -266,7 +266,7 @@
 <body>
 
   <div id="ticker-bar">
-    <div id="version-badge">v1.0.4</div>
+    <div id="version-badge"></div>
     <div id="ticker-text" title="Hold click to pause ticker (or click during chess event!)">BREAKING: Printing press warms up...</div>
     <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
   </div>
@@ -313,6 +313,7 @@
     <button id="reset-btn" onclick="hardReset()">Hard Reset</button>
   </div>
 
+  <script src="version.js"></script>
   <script src="headlines.js"></script>
 
   <script>
@@ -690,6 +691,7 @@
     }
     requestAnimationFrame(animateNewspaper);
 
+    document.getElementById('version-badge').innerText = GAME_VERSION;
     initBuildingsUI();
     loadGame();
     updateUI();
