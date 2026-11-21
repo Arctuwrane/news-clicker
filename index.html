@@ -79,6 +79,19 @@
     #skip-news-btn:active {
       transform: scale(0.95);
     }
+    /* Main workspace split between main game area and right sidebar */
+    #main-layout {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      width: 100%;
+    }
+    #game-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
     header {
       padding: 14px 20px 5px;
       flex-shrink: 0;
@@ -124,8 +137,8 @@
     .view-section {
       display: none;
       flex-grow: 1;
-      padding: 10px 260px 20px 20px;
-      max-width: 1120px;
+      padding: 10px 20px 20px;
+      max-width: 900px;
       width: 100%;
       margin: 0 auto;
     }
@@ -236,16 +249,34 @@
       color: #b22222;
       padding-left: 10px;
     }
-    /* Right Sidebar for Sequential Upgrades */
+
+    /* Framed Right Sidebar Panel */
+    #upgrades-panel {
+      width: 270px;
+      flex-shrink: 0;
+      background-color: #e2e2e2;
+      border-left: 3px solid #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 12px;
+      z-index: 10;
+    }
+    #upgrades-header {
+      margin: 0 0 12px 0;
+      font-size: 1.35rem;
+      font-weight: bold;
+      color: #111;
+      border-bottom: 2px solid #111;
+      padding-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
     #upgrades-sidebar {
-      position: fixed;
-      top: 62px;
-      right: 15px;
-      width: 230px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      z-index: 10;
+      flex-grow: 1;
+      overflow-y: auto;
     }
     .upgrade-card {
       background-color: #fffdf9;
@@ -253,7 +284,7 @@
       padding: 10px 12px;
       text-align: left;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
       transition: background-color 0.1s, transform 0.08s;
     }
     .upgrade-card:hover:not(.disabled) {
@@ -286,16 +317,20 @@
       color: #333;
       line-height: 1.25;
     }
+    .all-bought-msg {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #444;
+      margin-top: 10px;
+    }
     .footer-controls {
-      position: fixed;
-      bottom: 12px;
-      right: 15px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid #bbb;
       font-size: 0.8rem;
-      color: #666;
-      z-index: 10;
+      color: #444;
     }
     #reset-btn {
       font-family: Georgia, serif;
@@ -321,48 +356,57 @@
     <button id="skip-news-btn" onclick="skipToNextNews()">Read the news</button>
   </div>
 
-  <header>
-    <div class="stats-bar">
-      <div class="newspaper-count">Newspapers: <span id="newspapers">0</span></div>
-      <div class="rates">
-        Newspapers per click: <span id="npc">1</span> &nbsp;|&nbsp; Newspapers per second: <span id="nps">0</span>
+  <div id="main-layout">
+    <div id="game-area">
+      <header>
+        <div class="stats-bar">
+          <div class="newspaper-count">Newspapers: <span id="newspapers">0</span></div>
+          <div class="rates">
+            Newspapers per click: <span id="npc">1</span> &nbsp;|&nbsp; Newspapers per second: <span id="nps">0</span>
+          </div>
+        </div>
+        <div class="nav-tabs">
+          <button id="tab-press" class="tab-btn active" onclick="switchTab('press')">📰 Printing Press</button>
+          <button id="tab-buildings" class="tab-btn" onclick="switchTab('buildings')">🏢 Buy Buildings</button>
+        </div>
+      </header>
+
+      <div id="view-press" class="view-section active">
+        <div id="newspaper-wrapper">
+          <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper" aria-label="Print a newspaper">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <rect x="26" y="24" width="80" height="82" rx="4" fill="#dcd4c3" stroke="#111" stroke-width="4.5"/>
+              <rect x="14" y="14" width="80" height="84" rx="4" fill="#fffdf9" stroke="#111" stroke-width="4.5"/>
+              <rect x="24" y="24" width="60" height="12" rx="2" fill="#111"/>
+              <line x1="24" y1="42" x2="84" y2="42" stroke="#111" stroke-width="3"/>
+              <rect x="24" y="49" width="28" height="24" rx="2" fill="#d5cbb8" stroke="#111" stroke-width="3"/>
+              <line x1="59" y1="51" x2="84" y2="51" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="59" y1="59" x2="84" y2="59" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="59" y1="67" x2="84" y2="67" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="59" y1="75" x2="78" y2="75" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="24" y1="82" x2="84" y2="82" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="24" y1="89" x2="72" y2="89" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="view-buildings" class="view-section">
+        <div class="buildings-grid" id="buildings-container"></div>
       </div>
     </div>
-    <div class="nav-tabs">
-      <button id="tab-press" class="tab-btn active" onclick="switchTab('press')">📰 Printing Press</button>
-      <button id="tab-buildings" class="tab-btn" onclick="switchTab('buildings')">🏢 Buy Buildings</button>
-    </div>
-  </header>
 
-  <div id="view-press" class="view-section active">
-    <div id="newspaper-wrapper">
-      <button id="newspaper-btn" onclick="printNewspaper()" title="Click to print a newspaper" aria-label="Print a newspaper">
-        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <rect x="26" y="24" width="80" height="82" rx="4" fill="#dcd4c3" stroke="#111" stroke-width="4.5"/>
-          <rect x="14" y="14" width="80" height="84" rx="4" fill="#fffdf9" stroke="#111" stroke-width="4.5"/>
-          <rect x="24" y="24" width="60" height="12" rx="2" fill="#111"/>
-          <line x1="24" y1="42" x2="84" y2="42" stroke="#111" stroke-width="3"/>
-          <rect x="24" y="49" width="28" height="24" rx="2" fill="#d5cbb8" stroke="#111" stroke-width="3"/>
-          <line x1="59" y1="51" x2="84" y2="51" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-          <line x1="59" y1="59" x2="84" y2="59" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-          <line x1="59" y1="67" x2="84" y2="67" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-          <line x1="59" y1="75" x2="78" y2="75" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-          <line x1="24" y1="82" x2="84" y2="82" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-          <line x1="24" y1="89" x2="72" y2="89" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
-  </div>
+    <aside id="upgrades-panel">
+      <div>
+        <h2 id="upgrades-header">Upgrades</h2>
+        <div id="upgrades-sidebar"></div>
+      </div>
 
-  <div id="view-buildings" class="view-section">
-    <div class="buildings-grid" id="buildings-container"></div>
-  </div>
-
-  <div id="upgrades-sidebar"></div>
-
-  <div class="footer-controls">
-    <span id="save-status">Autosave active</span>
-    <button id="reset-btn" onclick="hardReset()">Hard Reset</button>
+      <div class="footer-controls">
+        <span id="save-status">Autosave active</span>
+        <button id="reset-btn" onclick="hardReset()">Hard Reset</button>
+      </div>
+    </aside>
   </div>
 
   <script src="version.js"></script>
@@ -443,21 +487,17 @@
     }
 
     function recalculateStats() {
-      // 1. Base click + pre-multiplier flat additions
       let npc = 1;
       if (hasUpgrade('low_volume_inking')) npc += 0.5;
       if (hasUpgrade('newspaper_recycling')) npc += 1;
       if (hasUpgrade('typewriters')) npc += 1.5;
 
-      // 2. First multiplier wave (x2, x2, x2)
       if (hasUpgrade('hand_crank_press')) npc *= 2;
       if (hasUpgrade('ambidextrous')) npc *= 2;
       if (hasUpgrade('press_rolls')) npc *= 2;
 
-      // 3. News Overload sets Newspapers/click to 200
       if (hasUpgrade('news_overload')) npc = 200;
 
-      // 4. Hand-Eye-Building Coordination (+0.1 per building, applied after multipliers)
       if (hasUpgrade('hand_eye_building_coordination')) {
         const includePaperboys = hasUpgrade('paperboy_teaming');
         const eligibleBuildings = buildings.reduce((sum, b) => {
@@ -467,12 +507,10 @@
         npc += eligibleBuildings * 0.1;
       }
 
-      // 5. Fingerdash Method (x5 Newspapers/click)
       if (hasUpgrade('fingerdash_method')) npc *= 5;
 
       newsPerClick = npc;
 
-      // 6. Newspapers per second (with Paperboy Teaming speed bonus)
       const paperboyCount = buildings.find(b => b.id === 'paperboy').count;
       const paperboyMultiplier = hasUpgrade('paperboy_teaming') ? (1 + paperboyCount * 0.01) : 1;
 
@@ -762,7 +800,7 @@
       const nextIndex = clickUpgrades.findIndex(u => !u.purchased);
 
       if (nextIndex === -1) {
-        sidebar.innerHTML = '';
+        sidebar.innerHTML = '<div class="all-bought-msg">All click upgrades purchased!</div>';
         return;
       }
 
