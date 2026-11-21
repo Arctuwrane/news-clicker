@@ -62,5 +62,80 @@ const unlockedHeadlines = [
   () => `You said the CC, now Zizhen is coming`,
   () => `Crazed man rambles about thought police and whatsamacallit, Zizhen declares "A new method to catch the unworthy".`,
   () => `Chat says keep playing`,
-  () => `It's time to stop playing, chat`
+  () => `It's time to stop playing, chat`,
+
+  // --- Upgrade-Locked Headlines ---
+  {
+    requires: 'newspaper_recycling',
+    text: () => `Newspaper company owner searches dumps for paper!`
+  },
+  {
+    requires: 'typewriters',
+    text: () => `ll th vwls r brkn, snd hlp mmdtly!`,
+    nextHeadline: `THEEEEE VOOOOOWEEEEELS AAAAAREEEEE BAAAAACK AAAAAND AAAAAREEEEE WOOOOORKIIIIING COOOOOMPLEEEEETLY FIIIIINEEEEE!!!`
+  },
+  {
+    requires: 'hand_crank_press',
+    text: () => `Crazed man keeps spinning crank, slowly become a crank himself`
+  },
+  {
+    requires: 'ambidextrous',
+    text: () => `Man writes with two hands, makes newspapers for a living?!`
+  },
+  {
+    requires: 'press_rolls',
+    text: () => `Local newspaper sells newspapers so thin that mosquito wripping is becoming a problem`
+  },
+  {
+    requires: 'hand_eye_building_coordination',
+    text: () => `Crazed man stares at building for ${randInt(3, 8)} hours straight!`
+  },
+  {
+    requires: 'fingerdash_method',
+    text: () => `"Human gamers are becoming indistinguishable from autoclick hackers", remarks Blake Lee, top crystal PvPer in the country"`
+  },
+  {
+    requires: 'paperboy_teaming',
+    text: () => `"There has been a huge influx of cross-teamers ever since the local newspaper started hiring paperboys", remarks Blake Lee, top crystal PvPer in the country`
+  },
+  {
+    requires: 'papergirls',
+    text: () => `Local newspaper introduces gender equality`
+  },
+  {
+    requires: 'bikes',
+    text: () => `"Newspaper delivery has never been faster!" remarks local man`
+  },
+  {
+    requires: 'sari_sari_wheels',
+    text: () => `Vendors are now competing with newspaper company for customers! Full-on seller vs. seller matches raging in streets!`
+  },
+  {
+    requires: 'private_jets',
+    text: () => `Average paperboy more luxurious than average millionare+`
+  },
+  {
+    requires: 'the_paper_fleet',
+    text: () => `Man in black suit orders for free newspapers`
+  },
+  {
+    requires: 'the_paper_fleet',
+    text: () => `A speaker dressed in a black suit told a public safety committee that the Emperor backed Flock license-plate cameras to find hidden bases at Hoth village and "stalk my ex-girlfriend,"`
+  },
+  {
+    requires: 'the_paper_fleet',
+    text: () => `Coverage highlighted the dark cape and helmet appearance as a tongue-in-cheek defense of automated surveillance technology.`
+  },
+  {
+    requires: 'the_paper_fleet',
+    text: () => `Colored light thingy grows popular among locals`
+  },
+  {
+    requires: 'supreme_intellect',
+    text: () => `"Ever since that newspaper company opened, the average IQ of locals has increased by ${randInt(1, 5)}0%" remarks local news reporter`
+  },
+  {
+    requires: 'supreme_intellect',
+    text: () => `"People are getting smarter and harder to beat! I gotta up my game", remarks Blake Lee, top crystal PvPer in the country"`
+  }
 ];
