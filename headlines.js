@@ -64,7 +64,7 @@ const unlockedHeadlines = [
   () => `Chat says keep playing`,
   () => `It's time to stop playing, chat`,
 
-  // --- Upgrade-Locked Headlines ---
+  // --- Click & Paperboy Upgrade-Locked Headlines ---
   {
     requires: 'newspaper_recycling',
     text: () => `Newspaper company owner searches dumps for paper!`
@@ -137,5 +137,40 @@ const unlockedHeadlines = [
   {
     requires: 'supreme_intellect',
     text: () => `"People are getting smarter and harder to beat! I gotta up my game", remarks Blake Lee, top crystal PvPer in the country"`
+  },
+
+  // --- Corner Kiosk Upgrade-Locked Headlines ---
+  {
+    requires: 'extreme_dazzle',
+    condition: () => buildings.find(b => b.id === 'paperboy').count > 0,
+    text: () => `Newspaper Kiosk outshines multiple casinos, paperboy interviewed, the reply: "i don't know"`
+  },
+  {
+    requires: 'open_coffee_shop',
+    text: () => `New coffee shop attracts local office workers! Buy some now for quadrupled efficiency! This headline is definitely not self-advertising its creator!`
+  },
+  {
+    requires: 'french_delicacies',
+    text: () => `French chefs currently being hired for coffee shop crossiants`
+  },
+  {
+    requires: 'french_delicacies',
+    text: () => `"Buy newspapers now!" - French Chef`
+  },
+  {
+    requires: 'premium_swiss_chocolates',
+    text: () => `The most premium chocolate is being imported straight from Switzerland! Buy now with discounts just by buying newspapers!`
+  },
+  {
+    requires: 'blind_boxes',
+    text: () => `New blind box series opens, causes unintended damage to corner kiosk`
+  },
+  {
+    requires: 'strategic_placements',
+    text: () => `The smartest geniuses of the century are gathering at a news station to talk about croissants`
+  },
+  {
+    requires: 'strategic_placements',
+    text: () => `Einstein has reawakened to taste croissants`
   }
 ];
