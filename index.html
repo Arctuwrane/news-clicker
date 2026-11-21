@@ -557,6 +557,7 @@
         newspapers -= cost;
         b.count += 1;
         recalculateStats();
+        renderUpgradesSidebar();
         updateUI();
         saveGame();
       }
@@ -586,6 +587,9 @@
       const nextPaperboyIndex = paperboyUpgrades.findIndex(u => !u.purchased);
       const nextKioskIndex = kioskUpgrades.findIndex(u => !u.purchased);
 
+      const hasPaperboy = getBuildingCount('paperboy') > 0;
+      const hasKiosk = getBuildingCount('kiosk') > 0;
+
       let html = '';
 
       if (nextClickIndex !== -1) {
@@ -601,7 +605,7 @@
         `;
       }
 
-      if (nextPaperboyIndex !== -1) {
+      if (hasPaperboy && nextPaperboyIndex !== -1) {
         const upg = paperboyUpgrades[nextPaperboyIndex];
         html += `
           <div class="upgrade-card" id="active-paperboy-upgrade" onclick="buyUpgrade('paperboy', ${nextPaperboyIndex})">
@@ -614,7 +618,7 @@
         `;
       }
 
-      if (nextKioskIndex !== -1) {
+      if (hasKiosk && nextKioskIndex !== -1) {
         const upg = kioskUpgrades[nextKioskIndex];
         const unlocked = isUpgradeUnlocked(upg);
         html += `
@@ -628,7 +632,7 @@
         `;
       }
 
-      if (!html) {
+      if (nextClickIndex === -1 && nextPaperboyIndex === -1 && nextKioskIndex === -1) {
         html = '<div class="all-bought-msg">All upgrades purchased!</div>';
       }
 
