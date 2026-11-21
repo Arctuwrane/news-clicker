@@ -33,6 +33,12 @@ body {
 #ticker-bar.chess-bonus {
   background-color: #1e6b34;
 }
+.ticker-left-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
 #version-badge {
   font-family: Georgia, serif;
   font-size: 0.85rem;
@@ -44,6 +50,24 @@ body {
   flex-shrink: 0;
   white-space: nowrap;
   letter-spacing: 0.5px;
+}
+#tab-stats {
+  font-family: Georgia, serif;
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  background-color: #111;
+  color: #f4f1ea;
+  border: 2px solid #f4f1ea;
+  flex-shrink: 0;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+#tab-stats:hover,
+#tab-stats.active {
+  background-color: #f4f1ea;
+  color: #111;
 }
 #ticker-text {
   flex-grow: 1;
