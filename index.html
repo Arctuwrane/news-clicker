@@ -315,6 +315,7 @@
 
   <script src="version.js"></script>
   <script src="headlines.js"></script>
+  <script src="upgrades.js"></script>
 
   <script>
     const SAVE_KEY = 'readTheNewsSave_v1';
@@ -550,7 +551,7 @@
     function triggerSquish() {
       const wrapper = document.getElementById('newspaper-wrapper');
       wrapper.classList.remove('squish');
-      void wrapper.offsetWidth; // Force reflow so rapid clicks restart the squish immediately
+      void wrapper.offsetWidth;
       wrapper.classList.add('squish');
     }
 
