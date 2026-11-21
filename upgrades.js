@@ -80,3 +80,86 @@ const clickUpgrades = [
     purchased: false
   }
 ];
+
+const paperboyUpgrades = [
+  {
+    id: 'papergirls',
+    name: 'Papergirls',
+    cost: 300,
+    description: 'x2 Paperboy NPS',
+    quote: '"This is a job for all"',
+    purchased: false
+  },
+  {
+    id: 'satchels',
+    name: 'Satchels',
+    cost: 1500,
+    description: 'x2 Paperboy NPS',
+    quote: '"These low-quality high-quantity bags are amazing!"',
+    purchased: false
+  },
+  {
+    id: 'wagons',
+    name: 'Wagons',
+    cost: 12500,
+    description: 'x2.5 Paperboy NPS',
+    quote: '"Red plastic never has held this much paper! It overflows the increased costs!"',
+    purchased: false
+  },
+  {
+    id: 'bikes',
+    name: 'Bikes',
+    cost: 230000,
+    description: 'Every non-paperboy building increases Paperboy NPS by +0.1 (applied after multipliers)',
+    quote: '"FASTER FASTER FASTER"',
+    purchased: false
+  },
+  {
+    id: 'sari_sari_wheels',
+    name: 'Sari-Sari Store on Wheels',
+    cost: 3600000,
+    description: 'x5 Paperboy NPS',
+    quote: '"Philippine Vendors on wheels! I love PH"',
+    purchased: false
+  },
+  {
+    id: 'cars',
+    name: 'Cars',
+    cost: 16000000,
+    description: 'Increases the "Bikes" power from 0.1 to 0.5',
+    quote: '"Keep rollin, rollin, rollin, roll\'n"',
+    purchased: false
+  },
+  {
+    id: 'private_jets',
+    name: 'Private Jets',
+    cost: 180000000,
+    description: 'Increases the "Bikes" power from 0.5 to 5',
+    quote: '"First class seating for first class people"',
+    purchased: false
+  },
+  {
+    id: 'the_paper_fleet',
+    name: 'The Paper Fleet',
+    cost: 2600000000,
+    description: 'Paperboys now count toward the Bikes upgrade, and "Bikes" power increases from 5 to 100',
+    quote: '"My Lord, the Fleet has moved out of bikespeed. Com-scan has detected an energy field protecting an area of the sixth corner kiosk of the Hoth village."',
+    purchased: false
+  },
+  {
+    id: 'perfect_vision_training',
+    name: 'Perfect Vision Training',
+    cost: 25000000000,
+    description: '"Bikes" power increased from 100 to 2,000',
+    quote: '"True Accuracy is measured by intellect, not speed"',
+    purchased: false
+  },
+  {
+    id: 'supreme_intellect',
+    name: 'Supreme Intellect',
+    cost: 300000000000,
+    description: '"Bikes" power increased from 2,000 to 40,000',
+    quote: '"These dudes are smarter than Einstein atp"',
+    purchased: false
+  }
+];
