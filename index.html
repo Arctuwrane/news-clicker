@@ -124,8 +124,8 @@
     .view-section {
       display: none;
       flex-grow: 1;
-      padding: 10px 20px 20px;
-      max-width: 900px;
+      padding: 10px 260px 20px 20px;
+      max-width: 1120px;
       width: 100%;
       margin: 0 auto;
     }
@@ -236,6 +236,56 @@
       color: #b22222;
       padding-left: 10px;
     }
+    /* Right Sidebar for Sequential Upgrades */
+    #upgrades-sidebar {
+      position: fixed;
+      top: 62px;
+      right: 15px;
+      width: 230px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+    }
+    .upgrade-card {
+      background-color: #fffdf9;
+      border: 2px solid #111;
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      transition: background-color 0.1s, transform 0.08s;
+    }
+    .upgrade-card:hover:not(.disabled) {
+      background-color: #eae4d7;
+    }
+    .upgrade-card:active:not(.disabled) {
+      transform: scale(0.98);
+    }
+    .upgrade-card.disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .u-header {
+      margin: 0 0 4px 0;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #111;
+      border-bottom: 1px solid #d5cbb8;
+      padding-bottom: 3px;
+    }
+    .u-cost {
+      margin: 0 0 4px 0;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #b22222;
+    }
+    .u-desc {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #333;
+      line-height: 1.25;
+    }
     .footer-controls {
       position: fixed;
       bottom: 12px;
@@ -307,6 +357,8 @@
   <div id="view-buildings" class="view-section">
     <div class="buildings-grid" id="buildings-container"></div>
   </div>
+
+  <div id="upgrades-sidebar"></div>
 
   <div class="footer-controls">
     <span id="save-status">Autosave active</span>
@@ -385,13 +437,61 @@
     let tickerInterval = null;
     let chessBonusAvailable = false;
 
+    function hasUpgrade(id) {
+      const upg = clickUpgrades.find(u => u.id === id);
+      return upg ? upg.purchased : false;
+    }
+
+    function recalculateStats() {
+      // 1. Base click + pre-multiplier flat additions
+      let npc = 1;
+      if (hasUpgrade('low_volume_inking')) npc += 0.5;
+      if (hasUpgrade('newspaper_recycling')) npc += 1;
+      if (hasUpgrade('typewriters')) npc += 1.5;
+
+      // 2. First multiplier wave (x2, x2, x2)
+      if (hasUpgrade('hand_crank_press')) npc *= 2;
+      if (hasUpgrade('ambidextrous')) npc *= 2;
+      if (hasUpgrade('press_rolls')) npc *= 2;
+
+      // 3. News Overload sets Newspapers/click to 200
+      if (hasUpgrade('news_overload')) npc = 200;
+
+      // 4. Hand-Eye-Building Coordination (+0.1 per building, applied after multipliers)
+      if (hasUpgrade('hand_eye_building_coordination')) {
+        const includePaperboys = hasUpgrade('paperboy_teaming');
+        const eligibleBuildings = buildings.reduce((sum, b) => {
+          if (!includePaperboys && b.id === 'paperboy') return sum;
+          return sum + b.count;
+        }, 0);
+        npc += eligibleBuildings * 0.1;
+      }
+
+      // 5. Fingerdash Method (x5 Newspapers/click)
+      if (hasUpgrade('fingerdash_method')) npc *= 5;
+
+      newsPerClick = npc;
+
+      // 6. Newspapers per second (with Paperboy Teaming speed bonus)
+      const paperboyCount = buildings.find(b => b.id === 'paperboy').count;
+      const paperboyMultiplier = hasUpgrade('paperboy_teaming') ? (1 + paperboyCount * 0.01) : 1;
+
+      newsPerSecond = buildings.reduce((total, b) => {
+        if (b.id === 'paperboy') {
+          return total + (b.nps * b.count * paperboyMultiplier);
+        }
+        return total + (b.nps * b.count);
+      }, 0);
+    }
+
     function saveGame() {
       if (isResetting) return;
       const saveData = {
         newspapers,
         totalNewspapersEarned,
         newsPerClick,
-        buildings: buildings.map(b => ({ id: b.id, count: b.count }))
+        buildings: buildings.map(b => ({ id: b.id, count: b.count })),
+        purchasedUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id)
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
 
@@ -411,7 +511,6 @@
         const data = JSON.parse(raw);
         if (typeof data.newspapers === 'number') newspapers = data.newspapers;
         if (typeof data.totalNewspapersEarned === 'number') totalNewspapersEarned = data.totalNewspapersEarned;
-        if (typeof data.newsPerClick === 'number') newsPerClick = data.newsPerClick;
 
         if (Array.isArray(data.buildings)) {
           data.buildings.forEach(savedB => {
@@ -421,7 +520,15 @@
             }
           });
         }
-        recalculateNPS();
+
+        if (Array.isArray(data.purchasedUpgrades)) {
+          data.purchasedUpgrades.forEach(id => {
+            const target = clickUpgrades.find(u => u.id === id);
+            if (target) target.purchased = true;
+          });
+        }
+
+        recalculateStats();
         checkTickerUnlock();
       } catch (e) {
         console.error('Failed to load save:', e);
@@ -631,14 +738,42 @@
       if (newspapers >= cost) {
         newspapers -= cost;
         b.count += 1;
-        recalculateNPS();
+        recalculateStats();
         updateUI();
         saveGame();
       }
     }
 
-    function recalculateNPS() {
-      newsPerSecond = buildings.reduce((total, b) => total + (b.nps * b.count), 0);
+    function buyUpgrade(index) {
+      const upg = clickUpgrades[index];
+      if (!upg || upg.purchased) return;
+      if (newspapers >= upg.cost) {
+        newspapers -= upg.cost;
+        upg.purchased = true;
+        recalculateStats();
+        renderUpgradesSidebar();
+        updateUI();
+        saveGame();
+      }
+    }
+
+    function renderUpgradesSidebar() {
+      const sidebar = document.getElementById('upgrades-sidebar');
+      const nextIndex = clickUpgrades.findIndex(u => !u.purchased);
+
+      if (nextIndex === -1) {
+        sidebar.innerHTML = '';
+        return;
+      }
+
+      const upg = clickUpgrades[nextIndex];
+      sidebar.innerHTML = `
+        <div class="upgrade-card" id="active-upgrade-card" onclick="buyUpgrade(${nextIndex})">
+          <div class="u-header">${upg.name}</div>
+          <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+          <div class="u-desc">${upg.description}</div>
+        </div>
+      `;
     }
 
     function checkTickerUnlock() {
@@ -655,7 +790,7 @@
         <div class="building-card" id="b-card-${index}" onclick="buyBuilding(${index})">
           <div class="b-info">
             <h3>${b.name}</h3>
-            <p>Cost: <span id="b-cost-${index}">${formatNumber(b.baseCost)}</span> | +${formatRate(b.nps)} n/s</p>
+            <p>Cost: <span id="b-cost-${index}">${formatNumber(b.baseCost)}</span> | +<span id="b-rate-${index}">${formatRate(b.nps)}</span> n/s</p>
           </div>
           <div class="b-owned" id="b-count-${index}">0</div>
         </div>
@@ -664,13 +799,19 @@
 
     function updateUI() {
       document.getElementById('newspapers').innerText = formatNumber(newspapers);
-      document.getElementById('npc').innerText = formatNumber(newsPerClick);
+      document.getElementById('npc').innerText = formatRate(newsPerClick);
       document.getElementById('nps').innerText = formatRate(newsPerSecond);
+
+      const paperboyCount = buildings.find(b => b.id === 'paperboy').count;
+      const paperboyMultiplier = hasUpgrade('paperboy_teaming') ? (1 + paperboyCount * 0.01) : 1;
 
       buildings.forEach((b, index) => {
         const cost = getBuildingCost(b);
         document.getElementById(`b-cost-${index}`).innerText = formatNumber(cost);
         document.getElementById(`b-count-${index}`).innerText = b.count;
+
+        const effectiveRate = b.id === 'paperboy' ? b.nps * paperboyMultiplier : b.nps;
+        document.getElementById(`b-rate-${index}`).innerText = formatRate(effectiveRate);
 
         const card = document.getElementById(`b-card-${index}`);
         if (newspapers >= cost) {
@@ -679,6 +820,16 @@
           card.classList.add('disabled');
         }
       });
+
+      const nextUpg = clickUpgrades.find(u => !u.purchased);
+      const upgCard = document.getElementById('active-upgrade-card');
+      if (nextUpg && upgCard) {
+        if (newspapers >= nextUpg.cost) {
+          upgCard.classList.remove('disabled');
+        } else {
+          upgCard.classList.add('disabled');
+        }
+      }
     }
 
     const newspaperBtnEl = document.getElementById('newspaper-btn');
@@ -695,6 +846,8 @@
     document.getElementById('version-badge').innerText = GAME_VERSION;
     initBuildingsUI();
     loadGame();
+    recalculateStats();
+    renderUpgradesSidebar();
     updateUI();
     startTickerTimer();
 
