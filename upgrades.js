@@ -163,3 +163,87 @@ const paperboyUpgrades = [
     purchased: false
   }
 ];
+
+const kioskUpgrades = [
+  {
+    id: 'neon_news_sign',
+    name: 'Neon News Sign',
+    cost: 1200,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"It reads: Beautiful things make beautiful customers! Buy newspapers now!"',
+    purchased: false
+  },
+  {
+    id: 'extreme_dazzle',
+    name: 'Extreme Dazzle',
+    cost: 6000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"It\'s the brightest thing in town!"',
+    purchased: false
+  },
+  {
+    id: 'weatherproof_awnings',
+    name: 'Weatherproof Awnings',
+    cost: 60000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"Dry everyday, every time!"',
+    purchased: false
+  },
+  {
+    id: 'open_coffee_shop',
+    name: 'Open Coffee Shop',
+    cost: 600000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"Even iPad kids and parents will stop by for delicious treats!"',
+    purchased: false
+  },
+  {
+    id: 'customizations',
+    name: 'Customizations',
+    cost: 6000000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"Extra Whipped cream, 5 shots, candy coats, chocolate syrup, chocolate shavings, and a biscuit on top"',
+    purchased: false
+  },
+  {
+    id: 'manipulated_discounts',
+    name: 'Manipulated Discounts',
+    cost: 60000000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"Buy ten newspapers for a coffee discount coupon!"',
+    purchased: false
+  },
+  {
+    id: 'french_delicacies',
+    name: 'French Delicacies',
+    cost: 6000000000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"Des croissants avec votre café, monsieur?"',
+    purchased: false
+  },
+  {
+    id: 'premium_swiss_chocolates',
+    name: 'Premium Swiss Chocolates',
+    cost: 600000000000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"Premium-Schokolade direkt aus der Schweiz!"',
+    purchased: false
+  },
+  {
+    id: 'blind_boxes',
+    name: 'Blind Boxes',
+    cost: 6000000000000,
+    description: 'x2 Corner Kiosk NPS',
+    quote: '"Don\'t underestimate these tiny things; they will cause riots if not handled properly!"',
+    purchased: false
+  },
+  {
+    id: 'strategic_placements',
+    name: 'Strategic Placements',
+    cost: 600000000000000,
+    requiresUpgrade: 'supreme_intellect',
+    description: 'x2 Corner Kiosk NPS (Requires Supreme Intellect)',
+    quote: '"This is the final step to conquering the street! Our greatest minds have pinpointed the exact place to set up shop."',
+    purchased: false
+  }
+];
