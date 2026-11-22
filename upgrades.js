@@ -247,3 +247,87 @@ const kioskUpgrades = [
     purchased: false
   }
 ];
+
+const truckUpgrades = [
+  {
+    id: 'ten_wheelers',
+    name: '10-wheelers',
+    cost: 13000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“Woah. That’s heavy.”',
+    purchased: false
+  },
+  {
+    id: 'reckmore_driving',
+    name: 'Reckmore Driving',
+    cost: 65000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“What’s the opposite of less? More.”',
+    purchased: false
+  },
+  {
+    id: 'airbags',
+    name: 'Airbags',
+    cost: 650000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“Reckmore driving casualties reduced by 50%!”',
+    purchased: false
+  },
+  {
+    id: 'life_insurance',
+    name: 'Life Insurance',
+    cost: 6500000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“Even the souls grant income!”',
+    purchased: false
+  },
+  {
+    id: 'air_conditioners',
+    name: 'Air Conditioners',
+    cost: 65000000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“Cool engines make cool people”',
+    purchased: false
+  },
+  {
+    id: 'built_in_printing_press',
+    name: 'Built-in Printing Press',
+    cost: 650000000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“No need to restock!”',
+    purchased: false
+  },
+  {
+    id: 'taco_stand',
+    name: 'Taco Stand',
+    cost: 6500000000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“¡Oferta de martes de tacos! ¡Compra periódicos con tus tacos!”',
+    purchased: false
+  },
+  {
+    id: 'taco_topping_selection',
+    name: 'Taco Topping Selection',
+    cost: 650000000000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“Extra Cheese? Yes. Extra Beef? Yes. Garlic Sauce? Absolutely!”',
+    purchased: false
+  },
+  {
+    id: 'shawarma_shack',
+    name: 'Shawarma Shack',
+    cost: 65000000000000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“Beef and Cheese is life”',
+    purchased: false
+  },
+  {
+    id: 'spicy_delicacies',
+    name: 'Spicy Delicacies',
+    cost: 6500000000000000,
+    description: 'Cargo Trucks are twice as efficient.',
+    quote: '“HOT HOT HOT”',
+    purchased: false
+  }
+];
+
