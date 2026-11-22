@@ -175,5 +175,36 @@ const unlockedHeadlines = [
   {
     requires: 'strategic_placements',
     text: () => `Einstein has reawakened to taste croissants`
+  },
+
+  // --- Cargo Truck Upgrade-Locked Headlines ---
+  {
+    requires: 'ten_wheelers',
+    text: () => `Chat says keep rolling`
+  },
+  {
+    requires: 'reckmore_driving',
+    text: () => `Reckmore driving has increased by ${randInt(5, 9)}0%!`
+  },
+  {
+    requires: 'airbags',
+    text: () => `New newspaper-sponsored airbags have reduced driving casualties by ${randInt(7, 9)}0%!`
+  },
+  {
+    requires: 'life_insurance',
+    text: () => `Life insurance companies are losing most of their income, multiple companies have gone bankrupt!`
+  },
+  {
+    requires: 'taco_stand',
+    text: () => `New Taco Stand opens on trucks! Tacos are amazing!`,
+    nextHeadline: `Now hiring Mexican Chefs!`
+  },
+  {
+    requires: 'shawarma_shack',
+    text: () => `Taco stands now selling shawarmas! Vendors compete for customers!`
+  },
+  {
+    requires: 'spicy_delicacies',
+    text: () => `Spicy foods have been added to taco stands! Try the spicy level 10 challenge today!`
   }
 ];
