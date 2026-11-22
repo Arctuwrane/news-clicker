@@ -67,7 +67,7 @@ const unlockedHeadlines = [
   () => '"A wise man changes his mind, a fool never will—especially when picking where to eat." - A Wise Man',
   () => '"x = (-b ± √(b² - 4ac)) / 2a" - A Wise Man',
 
-  // --- Click & Paperboy Upgrade-Locked Headlines ---
+  // --- Upgrade-Locked Headlines ---
   {
     requires: 'newspaper_recycling',
     text: () => `Newspaper company owner searches dumps for paper!`
