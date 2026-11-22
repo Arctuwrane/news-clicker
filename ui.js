@@ -20,7 +20,8 @@ function renderPurchasedUpgrades() {
   const allPurchased = [
     ...clickUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Click Upgrade' })),
     ...paperboyUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Paperboy Upgrade' })),
-    ...kioskUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Corner Kiosk Upgrade' }))
+    ...kioskUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Corner Kiosk Upgrade' })),
+    ...truckUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Cargo Truck Upgrade' }))
   ];
 
   if (allPurchased.length === 0) {
@@ -40,11 +41,12 @@ function renderPurchasedUpgrades() {
 }
 
 function updateStatsUI() {
-  const totalUpgrades = clickUpgrades.length + paperboyUpgrades.length + kioskUpgrades.length;
+  const totalUpgrades = clickUpgrades.length + paperboyUpgrades.length + kioskUpgrades.length + truckUpgrades.length;
   const boughtUpgrades =
     clickUpgrades.filter(u => u.purchased).length +
     paperboyUpgrades.filter(u => u.purchased).length +
-    kioskUpgrades.filter(u => u.purchased).length;
+    kioskUpgrades.filter(u => u.purchased).length +
+    truckUpgrades.filter(u => u.purchased).length;
 
   const totalBuildings = buildings.reduce((sum, b) => sum + b.count, 0);
 
@@ -129,9 +131,11 @@ function renderUpgradesSidebar() {
   const nextClickIndex = clickUpgrades.findIndex(u => !u.purchased);
   const nextPaperboyIndex = paperboyUpgrades.findIndex(u => !u.purchased);
   const nextKioskIndex = kioskUpgrades.findIndex(u => !u.purchased);
+  const nextTruckIndex = truckUpgrades.findIndex(u => !u.purchased);
 
   const hasPaperboy = getBuildingCount('paperboy') > 0;
   const hasKiosk = getBuildingCount('kiosk') > 0;
+  const hasTruck = getBuildingCount('truck') > 0;
 
   let html = '';
 
@@ -175,7 +179,20 @@ function renderUpgradesSidebar() {
     `;
   }
 
-  if (nextClickIndex === -1 && nextPaperboyIndex === -1 && nextKioskIndex === -1) {
+  if (hasTruck && nextTruckIndex !== -1) {
+    const upg = truckUpgrades[nextTruckIndex];
+    html += `
+      <div class="upgrade-card" id="active-truck-upgrade" onclick="buyUpgrade('truck', ${nextTruckIndex})">
+        <div class="u-category">Cargo Truck Upgrade</div>
+        <div class="u-header">${upg.name}</div>
+        <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+        <div class="u-desc">${upg.description}</div>
+        <div class="u-quote">${upg.quote}</div>
+      </div>
+    `;
+  }
+
+  if (nextClickIndex === -1 && nextPaperboyIndex === -1 && nextKioskIndex === -1 && nextTruckIndex === -1) {
     html = '<div class="all-bought-msg">All upgrades purchased!</div>';
   }
 
@@ -248,6 +265,12 @@ function updateUI() {
   const kioskCard = document.getElementById('active-kiosk-upgrade');
   if (nextKioskUpg && kioskCard) {
     kioskCard.classList.toggle('disabled', newspapers < nextKioskUpg.cost || !isUpgradeUnlocked(nextKioskUpg));
+  }
+
+  const nextTruckUpg = truckUpgrades.find(u => !u.purchased);
+  const truckCard = document.getElementById('active-truck-upgrade');
+  if (nextTruckUpg && truckCard) {
+    truckCard.classList.toggle('disabled', newspapers < nextTruckUpg.cost || !isUpgradeUnlocked(nextTruckUpg));
   }
 
   if (document.getElementById('view-stats').classList.contains('active')) {
