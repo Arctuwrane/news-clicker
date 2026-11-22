@@ -10,7 +10,8 @@ let isResetting = false;
 function hasUpgrade(id) {
   return clickUpgrades.some(u => u.id === id && u.purchased === true) ||
          paperboyUpgrades.some(u => u.id === id && u.purchased === true) ||
-         kioskUpgrades.some(u => u.id === id && u.purchased === true);
+         kioskUpgrades.some(u => u.id === id && u.purchased === true) ||
+         truckUpgrades.some(u => u.id === id && u.purchased === true);
 }
 
 function getBuildingCount(id) {
@@ -63,6 +64,14 @@ function getEffectiveKioskNps() {
   return rate;
 }
 
+function getEffectiveTruckNps() {
+  const truckBuilding = buildings.find(b => b.id === 'truck');
+  let rate = truckBuilding.baseNps;
+  const purchasedTruckCount = truckUpgrades.filter(u => u.purchased).length;
+  rate *= Math.pow(2, purchasedTruckCount);
+  return rate;
+}
+
 function recalculateStats() {
   let npc = 1;
   if (hasUpgrade('low_volume_inking')) npc += 0.5;
@@ -92,6 +101,8 @@ function recalculateStats() {
       b.nps = getEffectivePaperboyNps();
     } else if (b.id === 'kiosk') {
       b.nps = getEffectiveKioskNps();
+    } else if (b.id === 'truck') {
+      b.nps = getEffectiveTruckNps();
     } else {
       b.nps = b.baseNps;
     }
@@ -118,6 +129,7 @@ function resetGameStateToDefaults() {
   clickUpgrades.forEach(u => { u.purchased = false; });
   paperboyUpgrades.forEach(u => { u.purchased = false; });
   kioskUpgrades.forEach(u => { u.purchased = false; });
+  truckUpgrades.forEach(u => { u.purchased = false; });
 }
 
 function saveGame() {
@@ -132,7 +144,8 @@ function saveGame() {
     buildings: buildings.map(b => ({ id: b.id, count: b.count })),
     purchasedClickUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedPaperboyUpgrades: paperboyUpgrades.filter(u => u.purchased).map(u => u.id),
-    purchasedKioskUpgrades: kioskUpgrades.filter(u => u.purchased).map(u => u.id)
+    purchasedKioskUpgrades: kioskUpgrades.filter(u => u.purchased).map(u => u.id),
+    purchasedTruckUpgrades: truckUpgrades.filter(u => u.purchased).map(u => u.id)
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
 
@@ -184,6 +197,13 @@ function loadGame() {
     if (Array.isArray(data.purchasedKioskUpgrades)) {
       data.purchasedKioskUpgrades.forEach(id => {
         const target = kioskUpgrades.find(u => u.id === id);
+        if (target) target.purchased = true;
+      });
+    }
+
+    if (Array.isArray(data.purchasedTruckUpgrades)) {
+      data.purchasedTruckUpgrades.forEach(id => {
+        const target = truckUpgrades.find(u => u.id === id);
         if (target) target.purchased = true;
       });
     }
@@ -240,6 +260,7 @@ function buyUpgrade(chain, index) {
   if (chain === 'click') list = clickUpgrades;
   else if (chain === 'paperboy') list = paperboyUpgrades;
   else if (chain === 'kiosk') list = kioskUpgrades;
+  else if (chain === 'truck') list = truckUpgrades;
 
   const upg = list[index];
   if (!upg || upg.purchased || !isUpgradeUnlocked(upg)) return;
