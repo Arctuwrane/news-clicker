@@ -1,2 +1,2 @@
 # News Clicker
-Rise the ranks and become the most powerful news company; shape the world and become what we behold!
+Rise the ranks and become the most powerful news company; shape the world and become what we behold! Play now at https://arctuwrane.github.io/news-clicker/
