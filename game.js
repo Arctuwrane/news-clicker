@@ -304,6 +304,15 @@ setInterval(() => {
 }, 100);
 
 setInterval(() => {
+  window.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'c') {
+    const amount = 1000000000000; // 1 trillion
+    newspapers += amount;
+    totalNewspapersEarned += amount;
+    checkTickerUnlock();
+    updateUI();
+  }
+});
   saveGame();
 }, 5000);
 
