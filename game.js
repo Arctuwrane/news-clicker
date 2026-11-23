@@ -269,7 +269,6 @@ function buyUpgrade(chain, index) {
     upg.purchased = true;
     recalculateStats();
     renderUpgradesSidebar();
-    renderPurchasedUpgrades();
     updateUI();
     saveGame();
   }
