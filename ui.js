@@ -23,6 +23,7 @@ function switchTab(tabName) {
 }
 
 function renderPurchasedUpgrades() {
+  if (currentTab !== 'stats') return;
   const sidebar = document.getElementById('upgrades-sidebar');
   if (!sidebar) return;
 
