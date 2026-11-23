@@ -73,21 +73,21 @@ const unlockedHeadlines = [
   () => 'Think twice before opening the door',
   () => '"Friends are like snowflakes, they go away if you pee on them" - A Wise Man',
   () => '"Pray tell, what madness hast thee engaged in now?" - A Wise Man',
-  () => '"To my mind thou hast a propensity for trouble." - A Wise Man'
-  () => '"Now I bid thee, nay I entreat thee to try to create in thy mind a tale and world like no other that has come before." - A Wise Man'
-  () => '"It is the arrogance of the human mind that styles itself the center of all causation and occurrence, playing the parts of mortal idols of pride and vainglory." - A Wise Man'
-  () => '"The effervescent streams and lush vegetation of the natural world are warped in the ever-evolving depravities of the human race." - A Wise Man'
-  () => '"Anachronistic ideologies and beliefs are repudiated by the so called modern society, scorned when its repugnant nature is realized, and abandoned for fresh conceptions of equal corruption which can supersede its predecessor as the Grand Unreasoning utilized as an excuse to provide leeway in the form of false moral justification for immorality." - A Wise Man'
-  () => '"The most commonly exhausted, and most effective, of them tend to be recycled, reentering the world in a different guise. Chief among such bent desires, good in intention but darkened by the world, is Duty to Country, Duty to Humanity, and the role of Glorious Sacrifice." - A Wise Man'
-  () => '"All such charades are weighing on the idea that humanity is the great gravity around which all the universe revolves." - A Wise Man'
-  () => '"The Homo Sapiens can be called a diseased species, doomed by itself and its senseless belief that what they perceive with their finite minds has any effect on the ceaseless waltz of the celestial bodies." - A Wise Man'
-  () => '"If eating is your power, what are you without it?" - A Wise Man'
-  () => '"If living is your power, what are you without it?" - A Wise Man'
-  () => '"If China is your power, what are you without it?" - A Wise Man'
-  () => '"The definition of thy purpose of purity intwined between the masks of raw strength and intelligence sparks a vigorous attempt of power within the society of the malevolent maelstrom of the constant ticking of time and space is therefore a trajectory unknown to thy kind, a convulsion of the congregation of the ends of the space of thinking, the total cataclysm of the lustrous and perfectionistic community below the abyss of darkness within its eternal silence." - A Wise Man'
-  () => '"In war there are no winners, and the victors are victors in name only. How can it be that in truth when you have lost so much?" - A Wise Man'
-  () => '"I entreat thee to recreate thus script for the purposes of scribing its fanciful contents into a comprehensible prose" - A Wise Man'
-  () => '"Thou art enamored in illusions of fantasy, deluding thyself in the belief of thy own adequacy and superiority encompasses the girth and berth of a kleptomaniacal world whose angst is a maelstrom of an eclipse of ecstasy and abominable abbhorration." - A Wise Man'
+  () => '"To my mind thou hast a propensity for trouble." - A Wise Man',
+  () => '"Now I bid thee, nay I entreat thee to try to create in thy mind a tale and world like no other that has come before." - A Wise Man',
+  () => '"It is the arrogance of the human mind that styles itself the center of all causation and occurrence, playing the parts of mortal idols of pride and vainglory." - A Wise Man',
+  () => '"The effervescent streams and lush vegetation of the natural world are warped in the ever-evolving depravities of the human race." - A Wise Man',
+  () => '"Anachronistic ideologies and beliefs are repudiated by the so called modern society, scorned when its repugnant nature is realized, and abandoned for fresh conceptions of equal corruption which can supersede its predecessor as the Grand Unreasoning utilized as an excuse to provide leeway in the form of false moral justification for immorality." - A Wise Man',
+  () => '"The most commonly exhausted, and most effective, of them tend to be recycled, reentering the world in a different guise. Chief among such bent desires, good in intention but darkened by the world, is Duty to Country, Duty to Humanity, and the role of Glorious Sacrifice." - A Wise Man',
+  () => '"All such charades are weighing on the idea that humanity is the great gravity around which all the universe revolves." - A Wise Man',
+  () => '"The Homo Sapiens can be called a diseased species, doomed by itself and its senseless belief that what they perceive with their finite minds has any effect on the ceaseless waltz of the celestial bodies." - A Wise Man',
+  () => '"If eating is your power, what are you without it?" - A Wise Man',
+  () => '"If living is your power, what are you without it?" - A Wise Man',
+  () => '"If China is your power, what are you without it?" - A Wise Man',
+  () => '"The definition of thy purpose of purity intwined between the masks of raw strength and intelligence sparks a vigorous attempt of power within the society of the malevolent maelstrom of the constant ticking of time and space is therefore a trajectory unknown to thy kind, a convulsion of the congregation of the ends of the space of thinking, the total cataclysm of the lustrous and perfectionistic community below the abyss of darkness within its eternal silence." - A Wise Man',
+  () => '"In war there are no winners, and the victors are victors in name only. How can it be that in truth when you have lost so much?" - A Wise Man',
+  () => '"I entreat thee to recreate thus script for the purposes of scribing its fanciful contents into a comprehensible prose" - A Wise Man',
+  () => '"Thou art enamored in illusions of fantasy, deluding thyself in the belief of thy own adequacy and superiority encompasses the girth and berth of a kleptomaniacal world whose angst is a maelstrom of an eclipse of ecstasy and abominable abbhorration." - A Wise Man',
 
   // --- Upgrade-Locked Headlines ---
   {
