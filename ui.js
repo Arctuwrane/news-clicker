@@ -1,4 +1,8 @@
+let currentTab = 'press';
+
 function switchTab(tabName) {
+  currentTab = tabName;
+
   document.getElementById('view-press').classList.remove('active');
   document.getElementById('view-buildings').classList.remove('active');
   document.getElementById('view-stats').classList.remove('active');
@@ -12,11 +16,16 @@ function switchTab(tabName) {
   if (tabName === 'stats') {
     renderPurchasedUpgrades();
     updateStatsUI();
+  } else {
+    renderUpgradesSidebar();
+    updateUI();
   }
 }
 
 function renderPurchasedUpgrades() {
-  const container = document.getElementById('purchased-upgrades-list');
+  const sidebar = document.getElementById('upgrades-sidebar');
+  if (!sidebar) return;
+
   const allPurchased = [
     ...clickUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Click Upgrade' })),
     ...paperboyUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Paperboy Upgrade' })),
@@ -24,20 +33,23 @@ function renderPurchasedUpgrades() {
     ...truckUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Cargo Truck Upgrade' }))
   ];
 
+  let html = `<div class="sidebar-section-title" style="font-weight: bold; margin-bottom: 10px;">Purchased Upgrades (${allPurchased.length})</div>`;
+
   if (allPurchased.length === 0) {
-    container.innerHTML = '<div class="all-bought-msg">No upgrades purchased yet.</div>';
-    return;
+    html += '<div class="all-bought-msg">No upgrades purchased yet.</div>';
+  } else {
+    html += allPurchased.map(upg => `
+      <div class="purchased-upgrade-item">
+        <div class="u-category">${upg.category}</div>
+        <div class="u-header">${upg.name}</div>
+        <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+        <div class="u-desc">${upg.description}</div>
+        <div class="u-quote">${upg.quote}</div>
+      </div>
+    `).join('');
   }
 
-  container.innerHTML = allPurchased.map(upg => `
-    <div class="purchased-upgrade-item">
-      <div class="u-category">${upg.category}</div>
-      <div class="u-header">${upg.name}</div>
-      <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
-      <div class="u-desc">${upg.description}</div>
-      <div class="u-quote">${upg.quote}</div>
-    </div>
-  `).join('');
+  sidebar.innerHTML = html;
 }
 
 function updateStatsUI() {
@@ -127,6 +139,11 @@ function spawnNewspaperClone() {
 }
 
 function renderUpgradesSidebar() {
+  if (currentTab === 'stats') {
+    renderPurchasedUpgrades();
+    return;
+  }
+
   const sidebar = document.getElementById('upgrades-sidebar');
   const nextClickIndex = clickUpgrades.findIndex(u => !u.purchased);
   const nextPaperboyIndex = paperboyUpgrades.findIndex(u => !u.purchased);
@@ -249,31 +266,33 @@ function updateUI() {
     }
   });
 
-  const nextClickUpg = clickUpgrades.find(u => !u.purchased);
-  const clickCard = document.getElementById('active-click-upgrade');
-  if (nextClickUpg && clickCard) {
-    clickCard.classList.toggle('disabled', newspapers < nextClickUpg.cost || !isUpgradeUnlocked(nextClickUpg));
+  if (currentTab !== 'stats') {
+    const nextClickUpg = clickUpgrades.find(u => !u.purchased);
+    const clickCard = document.getElementById('active-click-upgrade');
+    if (nextClickUpg && clickCard) {
+      clickCard.classList.toggle('disabled', newspapers < nextClickUpg.cost || !isUpgradeUnlocked(nextClickUpg));
+    }
+
+    const nextPaperboyUpg = paperboyUpgrades.find(u => !u.purchased);
+    const paperboyCard = document.getElementById('active-paperboy-upgrade');
+    if (nextPaperboyUpg && paperboyCard) {
+      paperboyCard.classList.toggle('disabled', newspapers < nextPaperboyUpg.cost || !isUpgradeUnlocked(nextPaperboyUpg));
+    }
+
+    const nextKioskUpg = kioskUpgrades.find(u => !u.purchased);
+    const kioskCard = document.getElementById('active-kiosk-upgrade');
+    if (nextKioskUpg && kioskCard) {
+      kioskCard.classList.toggle('disabled', newspapers < nextKioskUpg.cost || !isUpgradeUnlocked(nextKioskUpg));
+    }
+
+    const nextTruckUpg = truckUpgrades.find(u => !u.purchased);
+    const truckCard = document.getElementById('active-truck-upgrade');
+    if (nextTruckUpg && truckCard) {
+      truckCard.classList.toggle('disabled', newspapers < nextTruckUpg.cost || !isUpgradeUnlocked(nextTruckUpg));
+    }
   }
 
-  const nextPaperboyUpg = paperboyUpgrades.find(u => !u.purchased);
-  const paperboyCard = document.getElementById('active-paperboy-upgrade');
-  if (nextPaperboyUpg && paperboyCard) {
-    paperboyCard.classList.toggle('disabled', newspapers < nextPaperboyUpg.cost || !isUpgradeUnlocked(nextPaperboyUpg));
-  }
-
-  const nextKioskUpg = kioskUpgrades.find(u => !u.purchased);
-  const kioskCard = document.getElementById('active-kiosk-upgrade');
-  if (nextKioskUpg && kioskCard) {
-    kioskCard.classList.toggle('disabled', newspapers < nextKioskUpg.cost || !isUpgradeUnlocked(nextKioskUpg));
-  }
-
-  const nextTruckUpg = truckUpgrades.find(u => !u.purchased);
-  const truckCard = document.getElementById('active-truck-upgrade');
-  if (nextTruckUpg && truckCard) {
-    truckCard.classList.toggle('disabled', newspapers < nextTruckUpg.cost || !isUpgradeUnlocked(nextTruckUpg));
-  }
-
-  if (document.getElementById('view-stats').classList.contains('active')) {
+  if (currentTab === 'stats') {
     updateStatsUI();
   }
 }
