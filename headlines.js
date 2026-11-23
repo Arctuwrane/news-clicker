@@ -66,6 +66,13 @@ const unlockedHeadlines = [
   () => '"Wise men learn more from fools than fools from the wise." - A Wise Man',
   () => '"A wise man changes his mind, a fool never will—especially when picking where to eat." - A Wise Man',
   () => '"x = (-b ± √(b² - 4ac)) / 2a" - A Wise Man',
+  () => 'Tacos are the new normal!',
+  () => 'Silence is peace. Sadness is normality. Newspapers are amazing.',
+  () => 'It all begins soon.',
+  () => 'Do not open the door for anyone',
+  () => 'Think twice before opening the door',
+  () => '"Friends are like snowflakes, they go away if you pee on them" - A Wise Man',
+  () => '',
 
   // --- Upgrade-Locked Headlines ---
   {
