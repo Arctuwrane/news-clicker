@@ -31,7 +31,8 @@ function renderPurchasedUpgrades() {
     ...clickUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Click Upgrade' })),
     ...paperboyUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Paperboy Upgrade' })),
     ...kioskUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Corner Kiosk Upgrade' })),
-    ...truckUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Cargo Truck Upgrade' }))
+    ...truckUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Cargo Truck Upgrade' })),
+    ...pressUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Printing Press Upgrade' }))
   ];
 
   let html = `<div class="sidebar-section-title" style="font-weight: bold; margin-bottom: 10px;">Purchased Upgrades (${allPurchased.length})</div>`;
@@ -54,12 +55,19 @@ function renderPurchasedUpgrades() {
 }
 
 function updateStatsUI() {
-  const totalUpgrades = clickUpgrades.length + paperboyUpgrades.length + kioskUpgrades.length + truckUpgrades.length;
+  const totalUpgrades =
+    clickUpgrades.length +
+    paperboyUpgrades.length +
+    kioskUpgrades.length +
+    truckUpgrades.length +
+    pressUpgrades.length;
+
   const boughtUpgrades =
     clickUpgrades.filter(u => u.purchased).length +
     paperboyUpgrades.filter(u => u.purchased).length +
     kioskUpgrades.filter(u => u.purchased).length +
-    truckUpgrades.filter(u => u.purchased).length;
+    truckUpgrades.filter(u => u.purchased).length +
+    pressUpgrades.filter(u => u.purchased).length;
 
   const totalBuildings = buildings.reduce((sum, b) => sum + b.count, 0);
 
@@ -150,10 +158,12 @@ function renderUpgradesSidebar() {
   const nextPaperboyIndex = paperboyUpgrades.findIndex(u => !u.purchased);
   const nextKioskIndex = kioskUpgrades.findIndex(u => !u.purchased);
   const nextTruckIndex = truckUpgrades.findIndex(u => !u.purchased);
+  const nextPressIndex = pressUpgrades.findIndex(u => !u.purchased);
 
   const hasPaperboy = getBuildingCount('paperboy') > 0;
   const hasKiosk = getBuildingCount('kiosk') > 0;
   const hasTruck = getBuildingCount('truck') > 0;
+  const hasPress = getBuildingCount('press') > 0;
 
   let html = '';
 
@@ -210,7 +220,26 @@ function renderUpgradesSidebar() {
     `;
   }
 
-  if (nextClickIndex === -1 && nextPaperboyIndex === -1 && nextKioskIndex === -1 && nextTruckIndex === -1) {
+  if (hasPress && nextPressIndex !== -1) {
+    const upg = pressUpgrades[nextPressIndex];
+    html += `
+      <div class="upgrade-card" id="active-press-upgrade" onclick="buyUpgrade('press', ${nextPressIndex})">
+        <div class="u-category">Printing Press Upgrade</div>
+        <div class="u-header">${upg.name}</div>
+        <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+        <div class="u-desc">${upg.description}</div>
+        <div class="u-quote">${upg.quote}</div>
+      </div>
+    `;
+  }
+
+  if (
+    nextClickIndex === -1 &&
+    nextPaperboyIndex === -1 &&
+    nextKioskIndex === -1 &&
+    nextTruckIndex === -1 &&
+    nextPressIndex === -1
+  ) {
     html = '<div class="all-bought-msg">All upgrades purchased!</div>';
   }
 
@@ -290,6 +319,12 @@ function updateUI() {
     const truckCard = document.getElementById('active-truck-upgrade');
     if (nextTruckUpg && truckCard) {
       truckCard.classList.toggle('disabled', newspapers < nextTruckUpg.cost || !isUpgradeUnlocked(nextTruckUpg));
+    }
+
+    const nextPressUpg = pressUpgrades.find(u => !u.purchased);
+    const pressCard = document.getElementById('active-press-upgrade');
+    if (nextPressUpg && pressCard) {
+      pressCard.classList.toggle('disabled', newspapers < nextPressUpg.cost || !isUpgradeUnlocked(nextPressUpg));
     }
   }
 
