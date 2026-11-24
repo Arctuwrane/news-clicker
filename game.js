@@ -5,6 +5,7 @@ let totalNewspaperClicks = 0;
 let activePlayTimeMs = 0;
 let newsPerClick = 1;
 let newsPerSecond = 0;
+let buyAmount = 1;
 let isResetting = false;
 
 function hasUpgrade(id) {
@@ -264,10 +265,10 @@ function printNewspaper() {
 
 function buyBuilding(index) {
   const b = buildings[index];
-  const cost = getBuildingCost(b);
+  const cost = getBulkBuildingCost(b, buyAmount);
   if (newspapers >= cost) {
     newspapers -= cost;
-    b.count += 1;
+    b.count += buyAmount;
     recalculateStats();
     renderUpgradesSidebar();
     updateUI();
