@@ -57,6 +57,12 @@
       </div>
 
       <div id="view-buildings" class="view-section">
+        <div class="bulk-buy-bar">
+          <span>Buy Amount:</span>
+          <button class="bulk-btn active" id="bulk-1" onclick="setBuyAmount(1)">1x</button>
+          <button class="bulk-btn" id="bulk-10" onclick="setBuyAmount(10)">10x</button>
+          <button class="bulk-btn" id="bulk-100" onclick="setBuyAmount(100)">100x</button>
+        </div>
         <div class="buildings-grid" id="buildings-container"></div>
       </div>
 
@@ -77,7 +83,7 @@
           </div>
           <div class="stat-box">
             <div class="stat-label">Total Upgrades Bought</div>
-            <div class="stat-value" id="stat-upgrades-bought">0 / 30</div>
+            <div class="stat-value" id="stat-upgrades-bought">0 / 50</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">Total Buildings Bought</div>
@@ -111,7 +117,7 @@
     </aside>
   </div>
 
-<script src="version.js"></script>
+  <script src="version.js"></script>
   <script src="headlines.js"></script>
   <script src="upgrades.js"></script>
   <script src="data.js"></script>
