@@ -67,7 +67,7 @@ function updateStatsUI() {
   document.getElementById('stat-manual-news').innerText = formatNumber(manualNewspapersEarned);
   document.getElementById('stat-upgrades-bought').innerText = `${boughtUpgrades} / ${totalUpgrades}`;
   document.getElementById('stat-buildings-bought').innerText = totalBuildings.toLocaleString();
-  document.getElementById('stat-run-age').innerText = formatDuration(Date.now() - runStartTime);
+  document.getElementById('stat-run-age').innerText = formatDuration(activePlayTimeMs);
   document.getElementById('stat-clicks').innerText = totalNewspaperClicks.toLocaleString();
 }
 
