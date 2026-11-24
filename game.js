@@ -2,7 +2,7 @@ let newspapers = 0;
 let totalNewspapersEarned = 0;
 let manualNewspapersEarned = 0;
 let totalNewspaperClicks = 0;
-let runStartTime = Date.now();
+let activePlayTimeMs = 0;
 let newsPerClick = 1;
 let newsPerSecond = 0;
 let isResetting = false;
@@ -116,7 +116,7 @@ function resetGameStateToDefaults() {
   totalNewspapersEarned = 0;
   manualNewspapersEarned = 0;
   totalNewspaperClicks = 0;
-  runStartTime = Date.now();
+  activePlayTimeMs = 0;
   newsPerClick = 1;
   newsPerSecond = 0;
   forcedNextHeadline = null;
@@ -139,7 +139,7 @@ function saveGame() {
     totalNewspapersEarned,
     manualNewspapersEarned,
     totalNewspaperClicks,
-    runStartTime,
+    activePlayTimeMs,
     newsPerClick,
     buildings: buildings.map(b => ({ id: b.id, count: b.count })),
     purchasedClickUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id),
@@ -168,7 +168,7 @@ function loadGame() {
     if (typeof data.totalNewspapersEarned === 'number') totalNewspapersEarned = data.totalNewspapersEarned;
     if (typeof data.manualNewspapersEarned === 'number') manualNewspapersEarned = data.manualNewspapersEarned;
     if (typeof data.totalNewspaperClicks === 'number') totalNewspaperClicks = data.totalNewspaperClicks;
-    if (typeof data.runStartTime === 'number') runStartTime = data.runStartTime;
+    if (typeof data.activePlayTimeMs === 'number') activePlayTimeMs = data.activePlayTimeMs;
 
     if (Array.isArray(data.buildings)) {
       data.buildings.forEach(savedB => {
@@ -290,11 +290,13 @@ initBuildingsUI();
 loadGame();
 recalculateStats();
 renderUpgradesSidebar();
-renderPurchasedUpgrades();
 updateUI();
 startTickerTimer();
 
 setInterval(() => {
+  if (!document.hidden) {
+    activePlayTimeMs += 100;
+  }
   const earnedThisTick = newsPerSecond / 10;
   newspapers += earnedThisTick;
   totalNewspapersEarned += earnedThisTick;
@@ -303,7 +305,10 @@ setInterval(() => {
 }, 100);
 
 setInterval(() => {
-  window.addEventListener('keydown', (e) => {
+  saveGame();
+}, 5000);
+
+window.addEventListener('keydown', (e) => {
   if (e.key.toLowerCase() === 'c') {
     const amount = 1000000000000; // 1 trillion
     newspapers += amount;
@@ -312,7 +317,5 @@ setInterval(() => {
     updateUI();
   }
 });
-  saveGame();
-}, 5000);
 
 window.addEventListener('beforeunload', saveGame);
