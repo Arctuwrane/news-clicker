@@ -479,3 +479,25 @@ header {
   text-align: left;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
+.bulk-buy-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.bulk-btn {
+  padding: 6px 14px;
+  border: 2px solid #111;
+  background: #fffdf9;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.bulk-btn.active {
+  background: #111;
+  color: #fffdf9;
+}
