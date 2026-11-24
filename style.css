@@ -290,6 +290,14 @@ header {
   justify-content: space-between;
   padding: 14px 12px;
   z-index: 10;
+  min-height: 0;
+  overflow: hidden;
+}
+#upgrades-panel > div:first-child {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
 }
 #upgrades-header {
   margin: 0 0 12px 0;
@@ -299,13 +307,16 @@ header {
   border-bottom: 2px solid #111;
   padding-bottom: 8px;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 #upgrades-sidebar {
   display: flex;
   flex-direction: column;
   gap: 10px;
   flex-grow: 1;
+  min-height: 0;
   overflow-y: auto;
+  padding-right: 4px;
 }
 .upgrade-card {
   background-color: #fffdf9;
@@ -377,6 +388,7 @@ header {
   border-top: 1px solid #bbb;
   font-size: 0.8rem;
   color: #444;
+  flex-shrink: 0;
 }
 #reset-btn {
   font-family: Georgia, serif;
