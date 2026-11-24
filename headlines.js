@@ -227,6 +227,88 @@ const unlockedHeadlines = [
   },
   {
     requires: 'spicy_delicacies',
-    text: () => `Spicy foods have been added to taco stands! Try the spicy level 10 challenge today!`
+    text: () => `Spicy foods have been added to taco stands! Try the spicy level 10 challenge today!`,
   }
 ];
+
+// --- Printing Press Upgrade-Locked Headlines ---
+  {
+    requires: 'coupons',
+    text: () => `Newspaper newspaperists purchase the newspapers they themselves made!`
+  },
+  {
+    requires: 'antislack_policy',
+    text: () => `Slackers forced to pay for their slacking time!`
+  },
+  {
+    requires: 'antislack_policy',
+    text: () => `Procrastinators face legal issues`
+  },
+  {
+    requires: 'katana_process',
+    text: () => `Japanese Samurais gain new jobs!`
+  },
+  {
+    requires: 'katana_process',
+    text: () => `The art of the Katana has risen again`
+  },
+  {
+    requires: '48_hour_days',
+    text: () => `"Days and nights feel longer..." remarks delusional press worker`
+  },
+  {
+    requires: '48_hour_days',
+    text: () => `"I feel like time is slower when in the factory, they don't let us keep our watches either" remarks local newspaper press worker`
+  },
+  {
+    requires: 'robtics',
+    text: () => `Hundreds of workers pour out of newspaper presses worldwide!`
+  },
+  {
+    requires: 'robtics',
+    text: () => `Crazed newspaper magnate fires hundreds of workers in one day!`
+  },
+  {
+    requires: 'self_improving_ai',
+    text: () => `The matrix just might be coming`
+  },
+  {
+    requires: 'self_improving_ai',
+    text: () => `AI is taking over multiple factories!`
+  },
+  {
+    requires: 'self_improving_ai',
+    text: () => `Undercover AI agents refuse to interrogate due to safety precautions in code`
+  },
+  {
+    requires: 'self_improving_ai',
+    text: () => `AI reads atrocious group chat, shuts itself down`
+  },
+  {
+    requires: 'self_improving_ai',
+    text: () => `AI fails to complete simple checkbox CAPTCHA`
+  },
+  {
+    requires: 'self_improving_ai',
+    text: () => `World Leaders Surrender to AI After It Threatens to Leak Everyone’s "Notes" App`
+  },
+  {
+    requires: 'volunteer_foundation',
+    text: () => `Hundreds of citizens reported missing after accepting a terms of service without reading it`
+  },
+  {
+    requires: 'gear_downsizing',
+    text: () => `Factory found contianing 2 million minifactories each containing a million miniminifactories!`
+  },
+  {
+    requires: 'infinity_engine',
+    text: () => `The world rejoices as maximum data no longer exists`
+  },
+  {
+    requires: 'infinity_engine',
+    text: () => `Every computer now contains every single piece of info in the world`
+  },
+  {
+    requires: 'infinity_engine',
+    text: () => `Newspapers take over the web as the infinity engine increases power`
+  }
