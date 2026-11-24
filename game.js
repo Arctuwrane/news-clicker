@@ -11,7 +11,8 @@ function hasUpgrade(id) {
   return clickUpgrades.some(u => u.id === id && u.purchased === true) ||
          paperboyUpgrades.some(u => u.id === id && u.purchased === true) ||
          kioskUpgrades.some(u => u.id === id && u.purchased === true) ||
-         truckUpgrades.some(u => u.id === id && u.purchased === true);
+         truckUpgrades.some(u => u.id === id && u.purchased === true) ||
+         pressUpgrades.some(u => u.id === id && u.purchased === true);
 }
 
 function getBuildingCount(id) {
@@ -72,6 +73,14 @@ function getEffectiveTruckNps() {
   return rate;
 }
 
+function getEffectivePressNps() {
+  const pressBuilding = buildings.find(b => b.id === 'press');
+  let rate = pressBuilding.baseNps;
+  const purchasedPressCount = pressUpgrades.filter(u => u.purchased).length;
+  rate *= Math.pow(2, purchasedPressCount);
+  return rate;
+}
+
 function recalculateStats() {
   let npc = 1;
   if (hasUpgrade('low_volume_inking')) npc += 0.5;
@@ -103,6 +112,8 @@ function recalculateStats() {
       b.nps = getEffectiveKioskNps();
     } else if (b.id === 'truck') {
       b.nps = getEffectiveTruckNps();
+    } else if (b.id === 'press') {
+      b.nps = getEffectivePressNps();
     } else {
       b.nps = b.baseNps;
     }
@@ -130,6 +141,7 @@ function resetGameStateToDefaults() {
   paperboyUpgrades.forEach(u => { u.purchased = false; });
   kioskUpgrades.forEach(u => { u.purchased = false; });
   truckUpgrades.forEach(u => { u.purchased = false; });
+  pressUpgrades.forEach(u => { u.purchased = false; });
 }
 
 function saveGame() {
@@ -145,7 +157,8 @@ function saveGame() {
     purchasedClickUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedPaperboyUpgrades: paperboyUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedKioskUpgrades: kioskUpgrades.filter(u => u.purchased).map(u => u.id),
-    purchasedTruckUpgrades: truckUpgrades.filter(u => u.purchased).map(u => u.id)
+    purchasedTruckUpgrades: truckUpgrades.filter(u => u.purchased).map(u => u.id),
+    purchasedPressUpgrades: pressUpgrades.filter(u => u.purchased).map(u => u.id)
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
 
@@ -208,6 +221,13 @@ function loadGame() {
       });
     }
 
+    if (Array.isArray(data.purchasedPressUpgrades)) {
+      data.purchasedPressUpgrades.forEach(id => {
+        const target = pressUpgrades.find(u => u.id === id);
+        if (target) target.purchased = true;
+      });
+    }
+
     recalculateStats();
     checkTickerUnlock();
   } catch (e) {
@@ -261,6 +281,7 @@ function buyUpgrade(chain, index) {
   else if (chain === 'paperboy') list = paperboyUpgrades;
   else if (chain === 'kiosk') list = kioskUpgrades;
   else if (chain === 'truck') list = truckUpgrades;
+  else if (chain === 'press') list = pressUpgrades;
 
   const upg = list[index];
   if (!upg || upg.purchased || !isUpgradeUnlocked(upg)) return;
