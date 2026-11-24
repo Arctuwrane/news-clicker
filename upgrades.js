@@ -331,3 +331,86 @@ const truckUpgrades = [
   }
 ];
 
+const pressUpgrades = [
+  {
+    id: 'coupons',
+    name: 'Coupons',
+    cost: 150000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Workers get coupons to buy in kiosks! More newspapers sold!"',
+    purchased: false
+  },
+  {
+    id: 'conveyor_belts',
+    name: 'Conveyor Belts',
+    cost: 750000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Sturdier than your dad\'s"',
+    purchased: false
+  },
+  {
+    id: 'antislack_policy',
+    name: 'Antislack Policy',
+    cost: 7500000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Slackers will pay with forced labor"',
+    purchased: false
+  },
+  {
+    id: 'katana_process',
+    name: 'Katana Process',
+    cost: 75000000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Papers are cut so fine one paper becomes two"',
+    purchased: false
+  },
+  {
+    id: '48_hour_days',
+    name: '48-hour days',
+    cost: 750000000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Same free time, same rest time, double the work"',
+    purchased: false
+  },
+  {
+    id: 'robtics',
+    name: 'Robtics',
+    cost: 7500000000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Replace all the entire workforce with robots: no more breaks, no more family issues, and full compliance!"',
+    purchased: false
+  },
+  {
+    id: 'self_improving_ai',
+    name: 'Self-improving AI',
+    cost: 75000000000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Requires 48-hour supervision: any missing code can cause this thing to take over the world!"',
+    purchased: false
+  },
+  {
+    id: 'volunteer_foundation',
+    name: '"Volunteer" Foundation',
+    cost: 7500000000000,
+    description: 'x2 Printing Press NPS',
+    quote: '"If you can\'t do it well, do it for free"',
+    purchased: false
+  },
+  {
+    id: 'gear_downsizing',
+    name: 'Gear Downsizing',
+    cost: 750000000000000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Factories inside factories inside factories"',
+    purchased: false
+  },
+  {
+    id: 'infinity_engine',
+    name: 'Infinity Engine',
+    cost: 75000000000000000,
+    description: 'x2 Printing Press NPS',
+    quote: '"Downsize terrabytes infinitely! Millions of terrabytes combined in one cubic millimeter! Downsize Everything! Downsize Workers! Downsize Newspapers and resize them later! Fill the world with newspapers!"',
+    purchased: false
+  }
+];
+
