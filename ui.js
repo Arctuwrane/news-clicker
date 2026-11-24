@@ -1,5 +1,14 @@
 let currentTab = 'press';
 
+function setBuyAmount(amount) {
+  buyAmount = amount;
+  [1, 10, 100].forEach(n => {
+    const btn = document.getElementById(`bulk-${n}`);
+    if (btn) btn.classList.toggle('active', n === amount);
+  });
+  updateUI();
+}
+
 function switchTab(tabName) {
   currentTab = tabName;
 
@@ -265,14 +274,15 @@ function updateUI() {
   document.getElementById('nps').innerText = formatRate(newsPerSecond);
 
   buildings.forEach((b, index) => {
-    const cost = getBuildingCost(b);
+    const singleCost = getBuildingCost(b);
+    const cost = getBulkBuildingCost(b, buyAmount);
     const card = document.getElementById(`b-card-${index}`);
     const nameEl = document.getElementById(`b-name-${index}`);
     const costEl = document.getElementById(`b-cost-${index}`);
     const rateEl = document.getElementById(`b-rate-${index}`);
     const countEl = document.getElementById(`b-count-${index}`);
 
-    const isMystery = b.count === 0 && (newspapers * 2) < cost;
+    const isMystery = b.count === 0 && (newspapers * 2) < singleCost;
 
     if (isMystery) {
       card.classList.add('mystery');
@@ -283,7 +293,7 @@ function updateUI() {
       countEl.innerText = '?';
     } else {
       card.classList.remove('mystery');
-      nameEl.innerText = b.name;
+      nameEl.innerText = buyAmount > 1 ? `${b.name} (x${buyAmount})` : b.name;
       costEl.innerText = formatNumber(cost);
       rateEl.innerText = formatRate(b.nps);
       countEl.innerText = b.count;
