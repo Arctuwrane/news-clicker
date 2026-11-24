@@ -86,3 +86,9 @@ function formatDuration(ms) {
 function getBuildingCost(b) {
   return Math.ceil(b.baseCost * Math.pow(costMultiplier, b.count));
 }
+
+function getBulkBuildingCost(b, amount) {
+  if (amount === 1) return getBuildingCost(b);
+  const firstCost = getBuildingCost(b);
+  return Math.ceil(firstCost * (Math.pow(costMultiplier, amount) - 1) / (costMultiplier - 1));
+}
