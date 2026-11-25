@@ -10,6 +10,16 @@ const wordsOfTheDay = [
   "[input word here]"
 ];
 
+const hybridAnimals = [
+  ["Catdog", "dogs", "cats"],
+  ["Pocket elephants", "mice", "elephants"],
+  ["Meowls", "cats", "owls"],
+  ["Turtle pups", "turtles", "pups"],
+  ["Red Racoons", "foxes", "racoons"],
+  ["Crowcats", "crows", "dogs"],
+  ["Octodogs", "octopuses", "cats"]
+];
+
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -310,5 +320,98 @@ const unlockedHeadlines = [
   {
     requires: 'infinity_engine',
     text: () => `Newspapers take over the web as the infinity engine increases power`
+  },
+
+  // --- Paper Mill Upgrade-Locked Headlines ---
+  {
+    requires: 'loggers',
+    text: () => `Lumberjacks hiring!`
+  },
+  {
+    requires: 'replanting',
+    text: () => `Eco-friendly newspaper company supplies newspapers! Buy now!`
+  },
+  {
+    requires: 'replanting',
+    text: () => `New forest project started to mass-replant foressts!`
+  },
+  {
+    requires: 'diamond_axes',
+    text: () => `Lumberjacks proud of their shiny diamond axes!`
+  },
+  {
+    requires: 'diamond_axes',
+    text: () => `Join the newspaper company for a complimentary axe! (Must work for five years)`
+  },
+  {
+    requires: 'diamond_axes',
+    text: () => `Newspaper company starts shady mining corporation, lumberjacks start walking out of press holding shiny diamond axes!`
+  },
+  {
+    requires: 'laser_cutters',
+    text: () => `"Laser technology has never been this useful!" remarks elated scientist`
+  },
+  {
+    requires: 'mass_deforesters',
+    text: () => `Forests disappear within minutes, shady logging company accused`
+  },
+  {
+    requires: 'mass_deforesters',
+    text: () => `Hundreds of forests go missing overnight!`
+  },
+  {
+    requires: 'russian_forests',
+    text: () => `Russian forces appear to be advancing!`
+  },
+  {
+    requires: 'russian_forests',
+    text: () => `Russia buys more and more land`
+  },
+  {
+    requires: 'russian_forests',
+    text: () => `Newspaper company mutually supports Russia`
+  },
+  {
+    requires: 'genetic_engineering',
+    text: () => `Genetic breakthrough dazzles scientists all over the world!`
+  },
+  {
+    requires: 'hybrids',
+    text: () => {
+      const [animal0, animal1, animal2] = pickRandom(hybridAnimals);
+      return `New ${animal0} by breeding ${animal1} and ${animal2} species confirmed!`;
+    }
+  },
+  {
+    requires: 'hybrids',
+    text: () => `Illegal hybriding causes mass accidents!`
+  },
+  {
+    requires: 'hybrids',
+    text: () => `New, fast growing trees created using hybrids! Trees take over the world!`
+  },
+  {
+    requires: 'hybrids',
+    text: () => `The rhinodinogirrafeotigereo has caused tons of trouble!`
+  },
+  {
+    requires: 'sweet_deals',
+    text: () => `Shady buisnesses pop over everywhere!`
+  },
+  {
+    requires: 'sweet_deals',
+    text: () => `Shady contracts being signed by newspaper company!`
+  },
+  {
+    requires: 'sweet_deals',
+    text: () => `Russia gets even more land using contracts`
+  },
+  {
+    requires: 'sweet_deals',
+    text: () => `Half the world is Russian now`
+  },
+  {
+    requires: 'sweet_deals',
+    text: () => `Russian classes now implented in 50% of schools!`
   }
 ];
