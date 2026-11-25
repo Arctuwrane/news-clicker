@@ -227,11 +227,10 @@ const unlockedHeadlines = [
   },
   {
     requires: 'spicy_delicacies',
-    text: () => `Spicy foods have been added to taco stands! Try the spicy level 10 challenge today!`,
-  }
-];
+    text: () => `Spicy foods have been added to taco stands! Try the spicy level 10 challenge today!`
+  },
 
-// --- Printing Press Upgrade-Locked Headlines ---
+  // --- Printing Press Upgrade-Locked Headlines ---
   {
     requires: 'coupons',
     text: () => `Newspaper newspaperists purchase the newspapers they themselves made!`
@@ -312,3 +311,4 @@ const unlockedHeadlines = [
     requires: 'infinity_engine',
     text: () => `Newspapers take over the web as the infinity engine increases power`
   }
+];
