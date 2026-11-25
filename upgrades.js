@@ -404,7 +404,7 @@ const pressUpgrades = [
     quote: '"Factories inside factories inside factories"',
     purchased: false
   },
-  {
+ {
     id: 'infinity_engine',
     name: 'Infinity Engine',
     cost: 75000000000000000,
@@ -414,3 +414,85 @@ const pressUpgrades = [
   }
 ];
 
+const millUpgrades = [
+  {
+    id: 'loggers',
+    name: 'Loggers',
+    cost: 1400000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"Chop until you drop!"',
+    purchased: false
+  },
+  {
+    id: 'replanting',
+    name: 'Replanting',
+    cost: 7000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"An ancient technique"',
+    purchased: false
+  },
+  {
+    id: 'diamond_axes',
+    name: 'Diamond Axes',
+    cost: 70000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"Made straight from rare deepslate diamond ore guarded by ferocious spiders"',
+    purchased: false
+  },
+  {
+    id: 'laser_cutters',
+    name: 'Laser Cutters',
+    cost: 700000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"Laser technology made useful!"',
+    purchased: false
+  },
+  {
+    id: 'mass_deforesters',
+    name: 'Mass Deforesters',
+    cost: 7000000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"The Lorax would certainly not approve of this."',
+    purchased: false
+  },
+  {
+    id: 'russian_forests',
+    name: 'Russian Forests',
+    cost: 70000000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"Millions of hectares free to wipe to dust for your empire!"',
+    purchased: false
+  },
+  {
+    id: 'genetic_engineering',
+    name: 'Genetic Engineering',
+    cost: 700000000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"Using advanced gene-editing, you can now permanently double tree growth speed!"',
+    purchased: false
+  },
+  {
+    id: 'shotgun_sequencing',
+    name: 'Shotgun Sequencing',
+    cost: 70000000000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"Attacking genes has never sounded this good"',
+    purchased: false
+  },
+  {
+    id: 'hybrids',
+    name: 'Hybrids',
+    cost: 7000000000000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"Infuse two fast-breeding species into one"',
+    purchased: false
+  },
+  {
+    id: 'sweet_deals',
+    name: 'Sweet Deals',
+    cost: 700000000000000000,
+    description: 'x2 Paper Mill NPS',
+    quote: '"A country for 7 quadrillion newspapers? Sure! I\'ll buy 100!"',
+    purchased: false
+  }
+];
