@@ -13,7 +13,8 @@ function hasUpgrade(id) {
          paperboyUpgrades.some(u => u.id === id && u.purchased === true) ||
          kioskUpgrades.some(u => u.id === id && u.purchased === true) ||
          truckUpgrades.some(u => u.id === id && u.purchased === true) ||
-         pressUpgrades.some(u => u.id === id && u.purchased === true);
+         pressUpgrades.some(u => u.id === id && u.purchased === true) ||
+         millUpgrades.some(u => u.id === id && u.purchased === true);
 }
 
 function getBuildingCount(id) {
@@ -82,6 +83,14 @@ function getEffectivePressNps() {
   return rate;
 }
 
+function getEffectiveMillNps() {
+  const millBuilding = buildings.find(b => b.id === 'mill');
+  let rate = millBuilding.baseNps;
+  const purchasedMillCount = millUpgrades.filter(u => u.purchased).length;
+  rate *= Math.pow(2, purchasedMillCount);
+  return rate;
+}
+
 function recalculateStats() {
   let npc = 1;
   if (hasUpgrade('low_volume_inking')) npc += 0.5;
@@ -115,6 +124,8 @@ function recalculateStats() {
       b.nps = getEffectiveTruckNps();
     } else if (b.id === 'press') {
       b.nps = getEffectivePressNps();
+    } else if (b.id === 'mill') {
+      b.nps = getEffectiveMillNps();
     } else {
       b.nps = b.baseNps;
     }
@@ -143,6 +154,7 @@ function resetGameStateToDefaults() {
   kioskUpgrades.forEach(u => { u.purchased = false; });
   truckUpgrades.forEach(u => { u.purchased = false; });
   pressUpgrades.forEach(u => { u.purchased = false; });
+  millUpgrades.forEach(u => { u.purchased = false; });
 }
 
 function saveGame() {
@@ -159,7 +171,8 @@ function saveGame() {
     purchasedPaperboyUpgrades: paperboyUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedKioskUpgrades: kioskUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedTruckUpgrades: truckUpgrades.filter(u => u.purchased).map(u => u.id),
-    purchasedPressUpgrades: pressUpgrades.filter(u => u.purchased).map(u => u.id)
+    purchasedPressUpgrades: pressUpgrades.filter(u => u.purchased).map(u => u.id),
+    purchasedMillUpgrades: millUpgrades.filter(u => u.purchased).map(u => u.id)
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
 
@@ -229,6 +242,13 @@ function loadGame() {
       });
     }
 
+    if (Array.isArray(data.purchasedMillUpgrades)) {
+      data.purchasedMillUpgrades.forEach(id => {
+        const target = millUpgrades.find(u => u.id === id);
+        if (target) target.purchased = true;
+      });
+    }
+
     recalculateStats();
     checkTickerUnlock();
   } catch (e) {
@@ -283,6 +303,7 @@ function buyUpgrade(chain, index) {
   else if (chain === 'kiosk') list = kioskUpgrades;
   else if (chain === 'truck') list = truckUpgrades;
   else if (chain === 'press') list = pressUpgrades;
+  else if (chain === 'mill') list = millUpgrades;
 
   const upg = list[index];
   if (!upg || upg.purchased || !isUpgradeUnlocked(upg)) return;
