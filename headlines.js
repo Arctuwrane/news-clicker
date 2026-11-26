@@ -413,7 +413,7 @@ const unlockedHeadlines = [
   {
     requires: 'sweet_deals',
     text: () => `Russian classes now implented in 50% of schools!`
-  }
+  },
   // --- Distribution Hub Upgrade-Locked Headlines ---
   {
     requires: 'government_ties',
@@ -454,7 +454,7 @@ const unlockedHeadlines = [
   {
     requires: 'underground_hubs',
     text: () => `“I keep hearing mysterious clanking sounds under my garden!” remarks delusional local`
-  }
+  },
 // --- Global News Network Upgrade-Locked Headlines ---
   {
     requires: 'copy_paste',
