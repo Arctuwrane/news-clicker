@@ -414,4 +414,45 @@ const unlockedHeadlines = [
     requires: 'sweet_deals',
     text: () => `Russian classes now implented in 50% of schools!`
   }
+  // --- Distribution Hub Upgrade-Locked Headlines ---
+  {
+    requires: 'government_ties',
+    text: () => `Government supports local news company!`
+  },
+  {
+    requires: 'subscriptions',
+    text: () => `Like and Subscribe!`
+  },
+  {
+    requires: 'drone_mail',
+    text: () => `Government now putting to use new experimental drones nicknamed “Hypnodrones”!`
+  },
+  {
+    requires: 'drone_mail',
+    text: () => `AI tasked with making paperclips attempts to take over hypnodrones!`
+  },
+  {
+    requires: 'advertising',
+    text: () => `Want more cool headlines? Buy more upgrades now!`
+  },
+  {
+    requires: 'russian_landowning',
+    text: () => `Russia just loves getting more land atp`
+  },
+  {
+    requires: 'personalized_newspapers',
+    text: () => `Javokhir Sindarov snatches draw in World Championship Match!`
+  },
+  {
+    requires: 'politics',
+    text: () => `The president pooped on the bird which pooped on him`
+  },
+  {
+    requires: 'memes',
+    text: () => `meow meow meow meow`
+  },
+  {
+    requires: 'underground_hubs',
+    text: () => `“I keep hearing mysterious clanking sounds under my garden!” remarks delusional local`
+  }
 ];
