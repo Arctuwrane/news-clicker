@@ -7,7 +7,8 @@ const wordsOfTheDay = [
   "waw",
   "67",
   "Lakukuracha",
-  "[input word here]"
+  "[input word here]",
+  "squeakybananapeel"
 ];
 
 const hybridAnimals = [
@@ -98,6 +99,13 @@ const unlockedHeadlines = [
   () => '"In war there are no winners, and the victors are victors in name only. How can it be that in truth when you have lost so much?" - A Wise Man',
   () => '"I entreat thee to recreate thus script for the purposes of scribing its fanciful contents into a comprehensible prose" - A Wise Man',
   () => '"Thou art enamored in illusions of fantasy, deluding thyself in the belief of thy own adequacy and superiority encompasses the girth and berth of a kleptomaniacal world whose angst is a maelstrom of an eclipse of ecstasy and abominable abbhorration." - A Wise Man',
+  () => '"The ultimatum is if you do not cease in these indulgences, you shall find yourself in want of sucrose and fructose." - Crazed Cookie Magnate',
+  () => '"Thou art a wavering thought in a multitude of speakers. A grain of sand among the shores of thousands of seas. Even if you seem great in your ocean, your world is but a tide pool, that can be washed away in a second. The queen bee presiding over tiny arthropods, that die almost as soon as they are born. Everything in this world is finite, and it will have its end. The proportions of power are warped, inside the mind of a rooster that thinks itself a hawk." - A Wise Man',
+  () => '"Thy impudence shall not go without recompense, every action in the world, good or ill, results in a return of it in equal force and measure. What thou will do in thy life determines whether what will haunt thee in thy old age be avenging phantasms of retribution, else spirits of providence born of the prudence of a young age. What walks of life your winding path will lead thee, and thy feet take thee, thou art the one who chooses whither thou shalt travel, to mountainous heights, or hither to the deep depths of ravenous chasms." - A Wise Man',
+  () => '"Thou may not control every aspect of thy life, but thy mind and heart are still your own; thou art the one who decides whether thy will be for good, or ill." - A Wise Man',
+  () => '"Verily, your audacity shall not be bereft of repercussions, for every quantum of action, be it benevolent or malevolent, precipitates a reaction of commensurate magnitude. The trajectories you chart in this mortal coil shall dictate whether your twilight years are haunted by spectral revenants of karmic debt or by beatific entities born of youthful sagacity. The topological contours of your existence, the paths your pedestrian locomotion shall traverse, are yours to architect—whether towards the zenith of elevated plateaus or the nadir of rapacious abysses. While deterministic chaos may circumscribe certain parameters of your existence, your cognitive and affective domains remain within your purview; ergo, you are the arbiter of your own volition, whether it be aligned with constructive or destructive paradigms." - A Wise Man',
+  () => 'Hundreds trip over squeakybananapeels worldwide!',
+  () => 'Watch out for squeakybananapeels!',
 
   // --- Upgrade-Locked Headlines ---
   {
