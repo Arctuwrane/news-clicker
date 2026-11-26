@@ -496,3 +496,86 @@ const millUpgrades = [
     purchased: false
   }
 ];
+
+const hubUpgrades = [
+  {
+    id: 'government_ties',
+    name: 'Government Ties',
+    cost: 16000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"Everybody loves newspapers!"',
+    purchased: false
+  },
+  {
+    id: 'subscriptions',
+    name: 'Subscriptions',
+    cost: 80000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"Never miss a single issue!"',
+    purchased: false
+  },
+  {
+    id: 'drone_mail',
+    name: 'Drone Mail',
+    cost: 800000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"Delivered to your doorstep!"',
+    purchased: false
+  },
+  {
+    id: 'advertising',
+    name: 'Advertising',
+    cost: 8000000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"A world filled with news"',
+    purchased: false
+  },
+  {
+    id: 'russian_landowning',
+    name: 'Russian Landowning',
+    cost: 80000000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"To fill with countless exchange hub"',
+    purchased: false
+  },
+  {
+    id: 'trends',
+    name: 'Trends',
+    cost: 800000000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"News is trending!"',
+    purchased: false
+  },
+  {
+    id: 'personalized_newspapers',
+    name: 'Personalized Newspapers',
+    cost: 8000000000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"Everything imprtant to you: The latest brainrots, the most popular games, and the world chess championships"',
+    purchased: false
+  },
+  {
+    id: 'politics',
+    name: 'Politics',
+    cost: 800000000000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"Vote for newspapers!"',
+    purchased: false
+  },
+  {
+    id: 'memes',
+    name: 'Memes',
+    cost: 80000000000000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"meow meow meow meow"',
+    purchased: false
+  },
+  {
+    id: 'underground_hubs',
+    name: 'Underground Hubs',
+    cost: 8000000000000000000,
+    description: 'x2 Distribution Hub NPS',
+    quote: '"Take the underworld by storm!"',
+    purchased: false
+  }
+];
