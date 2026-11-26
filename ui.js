@@ -42,7 +42,8 @@ function renderPurchasedUpgrades() {
     ...kioskUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Corner Kiosk Upgrade' })),
     ...truckUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Cargo Truck Upgrade' })),
     ...pressUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Printing Press Upgrade' })),
-    ...millUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Paper Mill Upgrade' }))
+    ...millUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Paper Mill Upgrade' })),
+    ...hubUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Distribution Hub Upgrade' }))
   ];
 
   let html = `<div class="sidebar-section-title" style="font-weight: bold; margin-bottom: 10px;">Purchased Upgrades (${allPurchased.length})</div>`;
@@ -71,7 +72,8 @@ function updateStatsUI() {
     kioskUpgrades.length +
     truckUpgrades.length +
     pressUpgrades.length +
-    millUpgrades.length;
+    millUpgrades.length +
+    hubUpgrades.length;
 
   const boughtUpgrades =
     clickUpgrades.filter(u => u.purchased).length +
@@ -79,7 +81,8 @@ function updateStatsUI() {
     kioskUpgrades.filter(u => u.purchased).length +
     truckUpgrades.filter(u => u.purchased).length +
     pressUpgrades.filter(u => u.purchased).length +
-    millUpgrades.filter(u => u.purchased).length;
+    millUpgrades.filter(u => u.purchased).length +
+    hubUpgrades.filter(u => u.purchased).length;
 
   const totalBuildings = buildings.reduce((sum, b) => sum + b.count, 0);
 
@@ -172,12 +175,14 @@ function renderUpgradesSidebar() {
   const nextTruckIndex = truckUpgrades.findIndex(u => !u.purchased);
   const nextPressIndex = pressUpgrades.findIndex(u => !u.purchased);
   const nextMillIndex = millUpgrades.findIndex(u => !u.purchased);
+  const nextHubIndex = hubUpgrades.findIndex(u => !u.purchased);
 
   const hasPaperboy = getBuildingCount('paperboy') > 0;
   const hasKiosk = getBuildingCount('kiosk') > 0;
   const hasTruck = getBuildingCount('truck') > 0;
   const hasPress = getBuildingCount('press') > 0;
   const hasMill = getBuildingCount('mill') > 0;
+  const hasHub = getBuildingCount('hub') > 0;
 
   let html = '';
 
@@ -260,13 +265,27 @@ function renderUpgradesSidebar() {
     `;
   }
 
+  if (hasHub && nextHubIndex !== -1) {
+    const upg = hubUpgrades[nextHubIndex];
+    html += `
+      <div class="upgrade-card" id="active-hub-upgrade" onclick="buyUpgrade('hub', ${nextHubIndex})">
+        <div class="u-category">Distribution Hub Upgrade</div>
+        <div class="u-header">${upg.name}</div>
+        <div class="u-cost">Cost: ${formatNumber(upg.cost)}</div>
+        <div class="u-desc">${upg.description}</div>
+        <div class="u-quote">${upg.quote}</div>
+      </div>
+    `;
+  }
+
   if (
     nextClickIndex === -1 &&
     nextPaperboyIndex === -1 &&
     nextKioskIndex === -1 &&
     nextTruckIndex === -1 &&
     nextPressIndex === -1 &&
-    nextMillIndex === -1
+    nextMillIndex === -1 &&
+    nextHubIndex === -1
   ) {
     html = '<div class="all-bought-msg">All upgrades purchased!</div>';
   }
@@ -360,6 +379,12 @@ function updateUI() {
     const millCard = document.getElementById('active-mill-upgrade');
     if (nextMillUpg && millCard) {
       millCard.classList.toggle('disabled', newspapers < nextMillUpg.cost || !isUpgradeUnlocked(nextMillUpg));
+    }
+
+    const nextHubUpg = hubUpgrades.find(u => !u.purchased);
+    const hubCard = document.getElementById('active-hub-upgrade');
+    if (nextHubUpg && hubCard) {
+      hubCard.classList.toggle('disabled', newspapers < nextHubUpg.cost || !isUpgradeUnlocked(nextHubUpg));
     }
   }
 
