@@ -15,7 +15,8 @@ function hasUpgrade(id) {
          truckUpgrades.some(u => u.id === id && u.purchased === true) ||
          pressUpgrades.some(u => u.id === id && u.purchased === true) ||
          millUpgrades.some(u => u.id === id && u.purchased === true) ||
-         hubUpgrades.some(u => u.id === id && u.purchased === true);
+         hubUpgrades.some(u => u.id === id && u.purchased === true) ||
+         networkUpgrades.some(u => u.id === id && u.purchased === true);
 }
 
 function getBuildingCount(id) {
@@ -100,6 +101,14 @@ function getEffectiveHubNps() {
   return rate;
 }
 
+function getEffectiveNetworkNps() {
+  const networkBuilding = buildings.find(b => b.id === 'network');
+  let rate = networkBuilding.baseNps;
+  const purchasedNetworkCount = networkUpgrades.filter(u => u.purchased).length;
+  rate *= Math.pow(2, purchasedNetworkCount);
+  return rate;
+}
+
 function recalculateStats() {
   let npc = 1;
   if (hasUpgrade('low_volume_inking')) npc += 0.5;
@@ -137,6 +146,8 @@ function recalculateStats() {
       b.nps = getEffectiveMillNps();
     } else if (b.id === 'hub') {
       b.nps = getEffectiveHubNps();
+    } else if (b.id === 'network') {
+      b.nps = getEffectiveNetworkNps();
     } else {
       b.nps = b.baseNps;
     }
@@ -167,6 +178,7 @@ function resetGameStateToDefaults() {
   pressUpgrades.forEach(u => { u.purchased = false; });
   millUpgrades.forEach(u => { u.purchased = false; });
   hubUpgrades.forEach(u => { u.purchased = false; });
+  networkUpgrades.forEach(u => { u.purchased = false; });
 }
 
 function saveGame() {
@@ -185,7 +197,8 @@ function saveGame() {
     purchasedTruckUpgrades: truckUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedPressUpgrades: pressUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedMillUpgrades: millUpgrades.filter(u => u.purchased).map(u => u.id),
-    purchasedHubUpgrades: hubUpgrades.filter(u => u.purchased).map(u => u.id)
+    purchasedHubUpgrades: hubUpgrades.filter(u => u.purchased).map(u => u.id),
+    purchasedNetworkUpgrades: networkUpgrades.filter(u => u.purchased).map(u => u.id)
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
 
@@ -269,6 +282,13 @@ function loadGame() {
       });
     }
 
+    if (Array.isArray(data.purchasedNetworkUpgrades)) {
+      data.purchasedNetworkUpgrades.forEach(id => {
+        const target = networkUpgrades.find(u => u.id === id);
+        if (target) target.purchased = true;
+      });
+    }
+
     recalculateStats();
     checkTickerUnlock();
   } catch (e) {
@@ -325,6 +345,7 @@ function buyUpgrade(chain, index) {
   else if (chain === 'press') list = pressUpgrades;
   else if (chain === 'mill') list = millUpgrades;
   else if (chain === 'hub') list = hubUpgrades;
+  else if (chain === 'network') list = networkUpgrades;
 
   const upg = list[index];
   if (!upg || upg.purchased || !isUpgradeUnlocked(upg)) return;
