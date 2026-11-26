@@ -31,8 +31,8 @@ const buildings = [
   { id: 'press', name: 'Printing Press', baseNps: 64, nps: 64, baseCost: 17535, count: 0 },
   { id: 'mill', name: 'Paper Mill', baseNps: 308, nps: 308, baseCost: 165000, count: 0 },
   { id: 'hub', name: 'Distribution Hub', baseNps: 1455, nps: 1455, baseCost: 1800000, count: 0 },
-  { id: 'conglomerate', name: 'Media Conglomerate', baseNps: 8325, nps: 8325, baseCost: 25000000, count: 0 },
-  { id: 'network', name: 'Global News Network', baseNps: 48500, nps: 48500, baseCost: 390000000, count: 0 }
+  { id: 'network', name: 'Global News Network', baseNps: 8325, nps: 8325, baseCost: 25000000, count: 0 },
+  { id: 'wardenclyffe', name: 'Wardenclyffe', baseNps: 48500, nps: 48500, baseCost: 390000000, count: 0 }
 ];
 
 const NEWSPAPER_SVG = `
