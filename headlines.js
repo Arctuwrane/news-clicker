@@ -455,4 +455,115 @@ const unlockedHeadlines = [
     requires: 'underground_hubs',
     text: () => `“I keep hearing mysterious clanking sounds under my garden!” remarks delusional local`
   }
+// --- Global News Network Upgrade-Locked Headlines ---
+  {
+    requires: 'copy_paste',
+    text: () => `Keyboard shortcuts grow fashionable among locals!`
+  },
+  {
+    requires: 'chatboxes',
+    text: () => `Students mesmerized in chatboxes worldwide!`
+  },
+  {
+    requires: 'chatboxes',
+    text: () => `Students know all the latest news, thanks to the local newspaper company!`
+  },
+  {
+    requires: 'doomscrollables',
+    text: () => `Students worldwide simultaneously doomscroll as they chat!`
+  },
+  {
+    requires: 'doomscrollables',
+    text: () => {
+      const months = Math.floor(Math.random() * (18 - 3 + 1)) + 3;
+      return `Reported teenager who didn't look at his phone for multiple minutes straight apparently dislikes local newspaper company! Teen sentenced to ${months} months in prison!`;
+    }
+  },
+  {
+    requires: 'doomscrollables',
+    text: () => `Doomscrolling is trending!`
+  },
+  {
+    requires: 'paywalls',
+    text: () => `Students worldwide are using their allowance on news!`
+  },
+  {
+    requires: 'paywalls',
+    text: () => `Billionare loves news so much, buys entire network!`
+  },
+  {
+    requires: 'paywalls',
+    text: () => `Local newspaper company gets rich off students!`
+  },
+  {
+    requires: 'emojis',
+    text: () => `Emojis are trending! What's your favorite emoji?`
+  },
+  {
+    requires: 'emojis',
+    text: () => `Generation X campaign attempts to take down emojis!`
+  },
+  {
+    requires: 'emojis',
+    text: () => `🐈`
+  },
+  {
+    requires: 'emojis',
+    text: () => `🐱`
+  },
+  {
+    requires: 'interactive_games',
+    text: () => `Gaming is trending! What's your favorite video game?`
+  },
+  {
+    requires: 'interactive_games',
+    text: () => `Blocky video game launches new update!`
+  },
+  {
+    requires: 'interactive_games',
+    text: () => `End Update confirmed? Blocky video game fans beg for dimensional update!`
+  },
+  {
+    requires: 'interactive_games',
+    text: () => `END: Endless Nonsensical Delusions`
+  },
+  {
+    requires: 'interactive_games',
+    text: () => {
+      const days = Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
+      return `Man breaks computer after dying in his ${days.toLocaleString()} day long hardcore world!`;
+    }
+  },
+  {
+    requires: 'online_pets',
+    text: () => `Students addicted to feeding nonexistent pets!`
+  },
+  {
+    requires: 'online_pets',
+    text: () => `Students pour thousands of pesos on useless code!`
+  },
+  {
+    requires: 'web_browser_conversion',
+    text: () => `New web browser takes the world by storm!`
+  },
+  {
+    requires: 'engine_compatible',
+    text: () => `The infinity engine grows stronger`
+  },
+  {
+    requires: 'engine_compatible',
+    text: () => `The end is near as infinity becomes countable`
+  },
+  {
+    requires: 'engine_compatible',
+    text: () => `Infinity is anything and is everything`
+  },
+  {
+    requires: 'engine_compatible',
+    text: () => `Beware the horizontal eight`
+  },
+  {
+    requires: 'engine_compatible',
+    text: () => `Infinity becomes more realistic`
+  }
 ];
