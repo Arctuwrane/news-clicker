@@ -579,3 +579,87 @@ const hubUpgrades = [
     purchased: false
   }
 ];
+
+const networkUpgrades = [
+  {
+    id: 'copy_paste',
+    name: 'Copy-paste',
+    cost: 210000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"Ctrl A, Ctrl C, and finally Ctrl V."',
+    purchased: false
+  },
+  {
+    id: 'chatboxes',
+    name: 'Chatboxes',
+    cost: 1500000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"Interaction beyond the classroom"',
+    purchased: false
+  },
+  {
+    id: 'doomscrollables',
+    name: 'Doomscrollables',
+    cost: 15000000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"Look, it\'s a cat video!"',
+    purchased: false
+  },
+  {
+    id: 'paywalls',
+    name: 'Paywalls',
+    cost: 150000000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"Ye must pay to see premium exquisites"',
+    purchased: false
+  },
+  {
+    id: 'searchbar',
+    name: 'Searchbar',
+    cost: 1500000000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"Find anything and everything with one word"',
+    purchased: false
+  },
+  {
+    id: 'emojis',
+    name: 'Emojis',
+    cost: 15000000000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"We offer π 😊🐈🐱"',
+    purchased: false
+  },
+  {
+    id: 'interactive_games',
+    name: 'Interactive Games',
+    cost: 150000000000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"Only wise men know that three glass blocks, 3 pieces of quartz from hell, and three slabs of wood create a daylight detector"',
+    purchased: false
+  },
+  {
+    id: 'online_pets',
+    name: 'Online Pets',
+    cost: 15000000000000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"You\'ll never see to what extent these pieces of code addict people"',
+    purchased: false
+  },
+  {
+    id: 'web_browser_conversion',
+    name: 'Web Browser Conversion',
+    cost: 1500000000000000000,
+    description: 'x2 Global News Network NPS',
+    quote: '"Just like microsoft, stick all the headlines on the screen as soon as the browser is opened!"',
+    purchased: false
+  },
+  {
+    id: 'engine_compatible',
+    name: 'Engine-Compatible',
+    cost: 150000000000000000000,
+    requiresUpgrade: 'the_infinity_engine',
+    description: 'x2 Global News Network NPS',
+    quote: '"Now the possibilities are limitless!"',
+    purchased: false
+  }
+];
