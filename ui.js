@@ -1,4 +1,5 @@
 let currentTab = 'press';
+let bannerTimeout = null;
 
 function setBuyAmount(amount) {
   buyAmount = amount;
@@ -29,6 +30,56 @@ function switchTab(tabName) {
     renderUpgradesSidebar();
     updateUI();
   }
+}
+
+function showGoldStampBanner({ title, subtitle, bg, textColor, borderColor }) {
+  let banner = document.getElementById('gold-stamp-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'gold-stamp-banner';
+    document.body.appendChild(banner);
+  }
+
+  banner.style.backgroundColor = bg;
+  banner.style.color = textColor;
+  banner.style.borderTop = `4px solid ${borderColor}`;
+  banner.style.borderBottom = `4px solid ${borderColor}`;
+
+  banner.innerHTML = `
+    <div class="banner-title">${title}</div>
+    <div class="banner-sub">${subtitle}</div>
+  `;
+
+  banner.style.display = 'block';
+  banner.style.animation = 'none';
+  void banner.offsetWidth;
+  banner.style.animation = 'banner-pop 0.22s ease-out';
+
+  if (bannerTimeout) clearTimeout(bannerTimeout);
+  bannerTimeout = setTimeout(() => {
+    banner.style.display = 'none';
+  }, 3200);
+}
+
+function updateBuffsUI() {
+  let bar = document.getElementById('active-buffs-bar');
+  if (!bar) {
+    const statsBar = document.querySelector('.stats-bar');
+    if (!statsBar) return;
+    bar = document.createElement('div');
+    bar.id = 'active-buffs-bar';
+    statsBar.appendChild(bar);
+  }
+
+  if (typeof activeGoldBuffs === 'undefined' || !Array.isArray(activeGoldBuffs) || activeGoldBuffs.length === 0) {
+    bar.innerHTML = '';
+    return;
+  }
+
+  bar.innerHTML = activeGoldBuffs.map(b => {
+    const secs = Math.ceil(b.remainingMs / 1000);
+    return `<span class="buff-pill" style="background:${b.bg}; color:${b.textColor};">${b.label} (${secs}s)</span>`;
+  }).join('');
 }
 
 function renderPurchasedUpgrades() {
@@ -376,6 +427,7 @@ function updateUI() {
   document.getElementById('newspapers').innerText = formatNumber(newspapers);
   document.getElementById('npc').innerText = formatRate(newsPerClick);
   document.getElementById('nps').innerText = formatRate(newsPerSecond);
+  updateBuffsUI();
 
   buildings.forEach((b, index) => {
     const card = document.getElementById(`b-card-${index}`);
