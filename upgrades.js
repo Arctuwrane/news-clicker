@@ -662,4 +662,103 @@ const networkUpgrades = [
     quote: '"Now the possibilities are limitless!"',
     purchased: false
   }
+  const wardenclyffeUpgrades = [
+  {
+    id: 'space_science',
+    name: 'Space Science',
+    cost: 500000000,
+    priority: true,
+    noMultiplier: true,
+    description: 'Unlocks 10 new space-age buildings (#9–#18) and advanced Wardenclyffe upgrades',
+    quote: '"Space brings so much possible ideas and creations!"',
+    purchased: false
+  },
+  {
+    id: 'tesla_coil',
+    name: 'Tesla Coil',
+    cost: 4000000000,
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"I don\'t care that they stole my idea ... I care that they don\'t have any of their own."',
+    purchased: false
+  },
+  {
+    id: 'radios',
+    name: 'Radios',
+    cost: 20000000000,
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"The radio, I know I’m its father, but I don’t like it. May the news use it wisely"',
+    purchased: false
+  },
+  {
+    id: 'solar_panels',
+    name: 'Solar Panels',
+    cost: 200000000000,
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"Infinite energy earned from stealing a star\'s soul"',
+    purchased: false
+  },
+  {
+    id: 'satellites',
+    name: 'Satellites',
+    cost: 2000000000000,
+    requiresUpgrade: 'space_science',
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"The Pacific is the best toilet for satellites. Russia is coming"',
+    purchased: false
+  },
+  {
+    id: 'extra_enhanced_telecommunication',
+    name: 'Extra-enhanced Telecommunication',
+    cost: 20000000000000,
+    requiresUpgrade: 'space_science',
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"I am become Einstein, destroyer of worlds"',
+    purchased: false
+  },
+  {
+    id: 'autoquantum_computing',
+    name: 'Autoquantum Computing',
+    cost: 200000000000000,
+    requiresUpgrade: 'space_science',
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"If you think you understand quantum mechanics, you don\'t understand quantum mechanics."',
+    purchased: false
+  },
+  {
+    id: 'true_rng',
+    name: 'True RNG',
+    cost: 2000000000000000,
+    requiresUpgrade: 'space_science',
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"God does not play dice with the universe. The universe plays dice with us."',
+    purchased: false
+  },
+  {
+    id: 'ftl_waves',
+    name: 'FTL Waves',
+    cost: 200000000000000000,
+    requiresUpgrade: 'space_science',
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"Instant broadcasting! Escapes black holes! Hmmm, what could they look like?"',
+    purchased: false
+  },
+  {
+    id: 'dyson_swarms',
+    name: 'Dyson Swarms',
+    cost: 20000000000000000000,
+    requiresUpgrade: 'space_science',
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"We are star stuff harvesting sunlight"',
+    purchased: false
+  },
+  {
+    id: 'ai_supercore',
+    name: 'AI Supercore',
+    cost: 2000000000000000000000,
+    requiresUpgrades: ['space_science', 'self_improving_ai'],
+    description: 'x2 Wardenclyffe NPS',
+    quote: '"AI now controls all your dyson swarms, repairing them and replacing them, and hopefully they don\'t one day turn around on us and blast all that energy on us"',
+    purchased: false
+  }
+];
 ];
