@@ -32,7 +32,7 @@ const buildings = [
   { id: 'mill', name: 'Paper Mill', baseNps: 308, nps: 308, baseCost: 165000, count: 0 },
   { id: 'hub', name: 'Distribution Hub', baseNps: 1455, nps: 1455, baseCost: 1800000, count: 0 },
   { id: 'network', name: 'Global News Network', baseNps: 8325, nps: 8325, baseCost: 25000000, count: 0 },
-  { id: 'wardenclyffe', name: 'Wardenclyffe', baseNps: 48500, nps: 48500, baseCost: 390000000, count: 0 }
+  { id: 'wardenclyffe', name: 'Wardenclyffe', baseNps: 48500, nps: 48500, baseCost: 390000000, count: 0 },
   { id: 'university', name: 'University', quote: '"For some, knowledge is a bestseller"', requiresUpgrade: 'space_science', baseNps: 285000, nps: 285000, baseCost: 5500000000, count: 0 },
   { id: 'cloud_blimp', name: 'Cloud Blimp', quote: '"Drops newspapers from the sky!"', requiresUpgrade: 'space_science', baseNps: 1800000, nps: 1800000, baseCost: 85000000000, count: 0 },
   { id: 'spaceship', name: 'Spaceship', quote: '"To find those planets with wood and woodlike"', requiresUpgrade: 'space_science', baseNps: 8000000, nps: 8000000, baseCost: 730000000000, count: 0 },
