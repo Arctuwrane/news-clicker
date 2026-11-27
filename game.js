@@ -16,7 +16,8 @@ function hasUpgrade(id) {
          pressUpgrades.some(u => u.id === id && u.purchased === true) ||
          millUpgrades.some(u => u.id === id && u.purchased === true) ||
          hubUpgrades.some(u => u.id === id && u.purchased === true) ||
-         networkUpgrades.some(u => u.id === id && u.purchased === true);
+         networkUpgrades.some(u => u.id === id && u.purchased === true) ||
+         wardenclyffeUpgrades.some(u => u.id === id && u.purchased === true);
 }
 
 function getBuildingCount(id) {
@@ -25,8 +26,9 @@ function getBuildingCount(id) {
 }
 
 function isUpgradeUnlocked(upg) {
-  if (!upg.requiresUpgrade) return true;
-  return hasUpgrade(upg.requiresUpgrade);
+  if (upg.requiresUpgrade && !hasUpgrade(upg.requiresUpgrade)) return false;
+  if (Array.isArray(upg.requiresUpgrades) && !upg.requiresUpgrades.every(id => hasUpgrade(id))) return false;
+  return true;
 }
 
 function getEffectivePaperboyNps() {
@@ -109,6 +111,14 @@ function getEffectiveNetworkNps() {
   return rate;
 }
 
+function getEffectiveWardenclyffeNps() {
+  const wardenclyffeBuilding = buildings.find(b => b.id === 'wardenclyffe');
+  let rate = wardenclyffeBuilding.baseNps;
+  const purchasedMultiplierCount = wardenclyffeUpgrades.filter(u => u.purchased && !u.noMultiplier).length;
+  rate *= Math.pow(2, purchasedMultiplierCount);
+  return rate;
+}
+
 function recalculateStats() {
   let npc = 1;
   if (hasUpgrade('low_volume_inking')) npc += 0.5;
@@ -148,6 +158,8 @@ function recalculateStats() {
       b.nps = getEffectiveHubNps();
     } else if (b.id === 'network') {
       b.nps = getEffectiveNetworkNps();
+    } else if (b.id === 'wardenclyffe') {
+      b.nps = getEffectiveWardenclyffeNps();
     } else {
       b.nps = b.baseNps;
     }
@@ -165,6 +177,9 @@ function resetGameStateToDefaults() {
   newsPerClick = 1;
   newsPerSecond = 0;
   forcedNextHeadline = null;
+  if (typeof russianSatellitesCount !== 'undefined') {
+    russianSatellitesCount = 30;
+  }
 
   buildings.forEach(b => {
     b.count = 0;
@@ -179,6 +194,7 @@ function resetGameStateToDefaults() {
   millUpgrades.forEach(u => { u.purchased = false; });
   hubUpgrades.forEach(u => { u.purchased = false; });
   networkUpgrades.forEach(u => { u.purchased = false; });
+  wardenclyffeUpgrades.forEach(u => { u.purchased = false; });
 }
 
 function saveGame() {
@@ -190,6 +206,7 @@ function saveGame() {
     totalNewspaperClicks,
     activePlayTimeMs,
     newsPerClick,
+    russianSatellitesCount: typeof russianSatellitesCount !== 'undefined' ? russianSatellitesCount : 30,
     buildings: buildings.map(b => ({ id: b.id, count: b.count })),
     purchasedClickUpgrades: clickUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedPaperboyUpgrades: paperboyUpgrades.filter(u => u.purchased).map(u => u.id),
@@ -198,7 +215,8 @@ function saveGame() {
     purchasedPressUpgrades: pressUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedMillUpgrades: millUpgrades.filter(u => u.purchased).map(u => u.id),
     purchasedHubUpgrades: hubUpgrades.filter(u => u.purchased).map(u => u.id),
-    purchasedNetworkUpgrades: networkUpgrades.filter(u => u.purchased).map(u => u.id)
+    purchasedNetworkUpgrades: networkUpgrades.filter(u => u.purchased).map(u => u.id),
+    purchasedWardenclyffeUpgrades: wardenclyffeUpgrades.filter(u => u.purchased).map(u => u.id)
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
 
@@ -222,6 +240,9 @@ function loadGame() {
     if (typeof data.manualNewspapersEarned === 'number') manualNewspapersEarned = data.manualNewspapersEarned;
     if (typeof data.totalNewspaperClicks === 'number') totalNewspaperClicks = data.totalNewspaperClicks;
     if (typeof data.activePlayTimeMs === 'number') activePlayTimeMs = data.activePlayTimeMs;
+    if (typeof data.russianSatellitesCount === 'number' && typeof russianSatellitesCount !== 'undefined') {
+      russianSatellitesCount = Math.min(380855, Math.max(30, data.russianSatellitesCount));
+    }
 
     if (Array.isArray(data.buildings)) {
       data.buildings.forEach(savedB => {
@@ -289,6 +310,13 @@ function loadGame() {
       });
     }
 
+    if (Array.isArray(data.purchasedWardenclyffeUpgrades)) {
+      data.purchasedWardenclyffeUpgrades.forEach(id => {
+        const target = wardenclyffeUpgrades.find(u => u.id === id);
+        if (target) target.purchased = true;
+      });
+    }
+
     recalculateStats();
     checkTickerUnlock();
   } catch (e) {
@@ -325,6 +353,8 @@ function printNewspaper() {
 
 function buyBuilding(index) {
   const b = buildings[index];
+  if (b.requiresUpgrade && !hasUpgrade(b.requiresUpgrade)) return;
+
   const cost = getBulkBuildingCost(b, buyAmount);
   if (newspapers >= cost) {
     newspapers -= cost;
@@ -346,6 +376,7 @@ function buyUpgrade(chain, index) {
   else if (chain === 'mill') list = millUpgrades;
   else if (chain === 'hub') list = hubUpgrades;
   else if (chain === 'network') list = networkUpgrades;
+  else if (chain === 'wardenclyffe') list = wardenclyffeUpgrades;
 
   const upg = list[index];
   if (!upg || upg.purchased || !isUpgradeUnlocked(upg)) return;
