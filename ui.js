@@ -361,7 +361,7 @@ function renderUpgradesSidebar() {
 function initBuildingsUI() {
   const container = document.getElementById('buildings-container');
   container.innerHTML = buildings.map((b, index) => `
-    <div class="building-card ${b.requiresUpgrade ? 'locked-space' : ''}" id="b-card-${index}" onclick="buyBuilding(${index})">
+    <div class="building-card" id="b-card-${index}" onclick="buyBuilding(${index})">
       <div class="b-info">
         <h3 id="b-name-${index}">${b.name}</h3>
         ${b.quote ? `<div class="b-quote" id="b-quote-${index}">${b.quote}</div>` : ''}
@@ -379,13 +379,6 @@ function updateUI() {
 
   buildings.forEach((b, index) => {
     const card = document.getElementById(`b-card-${index}`);
-    if (b.requiresUpgrade && !hasUpgrade(b.requiresUpgrade)) {
-      card.classList.add('locked-space');
-      return;
-    } else {
-      card.classList.remove('locked-space');
-    }
-
     const singleCost = getBuildingCost(b);
     const cost = getBulkBuildingCost(b, buyAmount);
     const nameEl = document.getElementById(`b-name-${index}`);
@@ -394,7 +387,8 @@ function updateUI() {
     const rateEl = document.getElementById(`b-rate-${index}`);
     const countEl = document.getElementById(`b-count-${index}`);
 
-    const isMystery = b.count === 0 && (newspapers * 2) < singleCost;
+    const lockedByUpgrade = b.requiresUpgrade && !hasUpgrade(b.requiresUpgrade);
+    const isMystery = lockedByUpgrade || (b.count === 0 && (newspapers * 2) < singleCost);
 
     if (isMystery) {
       card.classList.add('mystery');
