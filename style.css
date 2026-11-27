@@ -526,3 +526,90 @@ header {
   background: #111;
   color: #fffdf9;
 }
+
+/* --- Gold Stamp & Storm Stamps --- */
+.gold-stamp {
+  position: fixed;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 32%, #fff3a1, #f5c518 55%, #b8860b 100%);
+  border: 2.5px solid #5c3d00;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.85), inset 0 0 4px rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, serif;
+  font-weight: bold;
+  font-size: 16px;
+  color: #5c3d00;
+  user-select: none;
+  transform: translate(-50%, -50%) scale(1);
+  transition: opacity 0.25s ease;
+}
+.gold-stamp::after {
+  content: '★';
+}
+.gold-stamp.storm-stamp {
+  width: 34px;
+  height: 34px;
+  z-index: 890;
+  opacity: 0.92;
+}
+
+/* --- Full-Width Edge-to-Edge Gold Stamp Banner --- */
+#gold-stamp-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100vw;
+  padding: 14px 20px;
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  z-index: 2000;
+  pointer-events: none;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  animation: banner-pop 0.22s ease-out;
+}
+#gold-stamp-banner .banner-title {
+  font-size: 2.1rem;
+  font-weight: bold;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+}
+#gold-stamp-banner .banner-sub {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 3px;
+}
+@keyframes banner-pop {
+  0% {
+    transform: translateY(-50%) scaleY(0.2);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(-50%) scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* --- Active Buff Indicators under Rates --- */
+#active-buffs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+  min-height: 22px;
+}
+.buff-pill {
+  font-size: 0.78rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border: 1.5px solid #111;
+  border-radius: 3px;
+}
