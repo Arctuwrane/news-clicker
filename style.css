@@ -253,9 +253,6 @@ header {
   min-height: 0;
   overflow: hidden;
 }
-.building-card.locked-space {
-  display: none;
-}
 .building-card:hover:not(.disabled):not(.mystery) {
   background-color: #eae4d7;
 }
