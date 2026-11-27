@@ -44,7 +44,8 @@ function renderPurchasedUpgrades() {
     ...pressUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Printing Press Upgrade' })),
     ...millUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Paper Mill Upgrade' })),
     ...hubUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Distribution Hub Upgrade' })),
-    ...networkUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Global News Network Upgrade' }))
+    ...networkUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Global News Network Upgrade' })),
+    ...wardenclyffeUpgrades.filter(u => u.purchased).map(u => ({ ...u, category: 'Wardenclyffe Upgrade' }))
   ];
 
   let html = `<div class="sidebar-section-title" style="font-weight: bold; margin-bottom: 10px;">Purchased Upgrades (${allPurchased.length})</div>`;
@@ -75,7 +76,8 @@ function updateStatsUI() {
     pressUpgrades.length +
     millUpgrades.length +
     hubUpgrades.length +
-    networkUpgrades.length;
+    networkUpgrades.length +
+    wardenclyffeUpgrades.length;
 
   const boughtUpgrades =
     clickUpgrades.filter(u => u.purchased).length +
@@ -85,7 +87,8 @@ function updateStatsUI() {
     pressUpgrades.filter(u => u.purchased).length +
     millUpgrades.filter(u => u.purchased).length +
     hubUpgrades.filter(u => u.purchased).length +
-    networkUpgrades.filter(u => u.purchased).length;
+    networkUpgrades.filter(u => u.purchased).length +
+    wardenclyffeUpgrades.filter(u => u.purchased).length;
 
   const totalBuildings = buildings.reduce((sum, b) => sum + b.count, 0);
 
@@ -165,6 +168,16 @@ function spawnNewspaperClone() {
   }, 10);
 }
 
+function getWardenclyffeLockLabel(upg) {
+  if (upg.id === 'ai_supercore') {
+    const missing = [];
+    if (!hasUpgrade('space_science')) missing.push('Space Science');
+    if (!hasUpgrade('self_improving_ai')) missing.push('Self-Improving AI');
+    return `Locked — Buy ${missing.join(' & ')} first`;
+  }
+  return 'Locked — Buy Space Science first';
+}
+
 function renderUpgradesSidebar() {
   if (currentTab === 'stats') {
     renderPurchasedUpgrades();
@@ -180,6 +193,7 @@ function renderUpgradesSidebar() {
   const nextMillIndex = millUpgrades.findIndex(u => !u.purchased);
   const nextHubIndex = hubUpgrades.findIndex(u => !u.purchased);
   const nextNetworkIndex = networkUpgrades.findIndex(u => !u.purchased);
+  const nextWardenclyffeIndex = wardenclyffeUpgrades.findIndex(u => !u.purchased);
 
   const hasPaperboy = getBuildingCount('paperboy') > 0;
   const hasKiosk = getBuildingCount('kiosk') > 0;
@@ -188,8 +202,34 @@ function renderUpgradesSidebar() {
   const hasMill = getBuildingCount('mill') > 0;
   const hasHub = getBuildingCount('hub') > 0;
   const hasNetwork = getBuildingCount('network') > 0;
+  const hasWardenclyffe = getBuildingCount('wardenclyffe') > 0;
+
+  let wardenclyffeHtml = '';
+  if (hasWardenclyffe && nextWardenclyffeIndex !== -1) {
+    const upg = wardenclyffeUpgrades[nextWardenclyffeIndex];
+    const unlocked = isUpgradeUnlocked(upg);
+    wardenclyffeHtml = `
+      <div class="upgrade-card" id="active-wardenclyffe-upgrade" onclick="buyUpgrade('wardenclyffe', ${nextWardenclyffeIndex})">
+        <div class="u-category">Wardenclyffe Upgrade</div>
+        <div class="u-header">${unlocked ? upg.name : '🔒 ' + upg.name}</div>
+        <div class="u-cost">${unlocked ? 'Cost: ' + formatNumber(upg.cost) : getWardenclyffeLockLabel(upg)}</div>
+        <div class="u-desc">${upg.description}</div>
+        <div class="u-quote">${upg.quote}</div>
+      </div>
+    `;
+  }
 
   let html = '';
+
+  // Priority: Space Science jumps to the highest slot in queue as soon as Wardenclyffe is bought
+  const isWardenclyffePriority =
+    hasWardenclyffe &&
+    nextWardenclyffeIndex !== -1 &&
+    wardenclyffeUpgrades[nextWardenclyffeIndex].priority;
+
+  if (isWardenclyffePriority) {
+    html += wardenclyffeHtml;
+  }
 
   if (nextClickIndex !== -1) {
     const upg = clickUpgrades[nextClickIndex];
@@ -297,6 +337,10 @@ function renderUpgradesSidebar() {
     `;
   }
 
+  if (!isWardenclyffePriority) {
+    html += wardenclyffeHtml;
+  }
+
   if (
     nextClickIndex === -1 &&
     nextPaperboyIndex === -1 &&
@@ -305,7 +349,8 @@ function renderUpgradesSidebar() {
     nextPressIndex === -1 &&
     nextMillIndex === -1 &&
     nextHubIndex === -1 &&
-    nextNetworkIndex === -1
+    nextNetworkIndex === -1 &&
+    nextWardenclyffeIndex === -1
   ) {
     html = '<div class="all-bought-msg">All upgrades purchased!</div>';
   }
@@ -316,9 +361,10 @@ function renderUpgradesSidebar() {
 function initBuildingsUI() {
   const container = document.getElementById('buildings-container');
   container.innerHTML = buildings.map((b, index) => `
-    <div class="building-card" id="b-card-${index}" onclick="buyBuilding(${index})">
+    <div class="building-card ${b.requiresUpgrade ? 'locked-space' : ''}" id="b-card-${index}" onclick="buyBuilding(${index})">
       <div class="b-info">
         <h3 id="b-name-${index}">${b.name}</h3>
+        ${b.quote ? `<div class="b-quote" id="b-quote-${index}">${b.quote}</div>` : ''}
         <p>Cost: <span id="b-cost-${index}">${formatNumber(b.baseCost)}</span> | +<span id="b-rate-${index}">${formatRate(b.baseNps)}</span> n/s</p>
       </div>
       <div class="b-owned" id="b-count-${index}">0</div>
@@ -332,10 +378,18 @@ function updateUI() {
   document.getElementById('nps').innerText = formatRate(newsPerSecond);
 
   buildings.forEach((b, index) => {
+    const card = document.getElementById(`b-card-${index}`);
+    if (b.requiresUpgrade && !hasUpgrade(b.requiresUpgrade)) {
+      card.classList.add('locked-space');
+      return;
+    } else {
+      card.classList.remove('locked-space');
+    }
+
     const singleCost = getBuildingCost(b);
     const cost = getBulkBuildingCost(b, buyAmount);
-    const card = document.getElementById(`b-card-${index}`);
     const nameEl = document.getElementById(`b-name-${index}`);
+    const quoteEl = document.getElementById(`b-quote-${index}`);
     const costEl = document.getElementById(`b-cost-${index}`);
     const rateEl = document.getElementById(`b-rate-${index}`);
     const countEl = document.getElementById(`b-count-${index}`);
@@ -346,12 +400,14 @@ function updateUI() {
       card.classList.add('mystery');
       card.classList.remove('disabled');
       nameEl.innerText = '???';
+      if (quoteEl) quoteEl.innerText = '???';
       costEl.innerText = '???';
       rateEl.innerText = '???';
       countEl.innerText = '?';
     } else {
       card.classList.remove('mystery');
       nameEl.innerText = buyAmount > 1 ? `${b.name} (x${buyAmount})` : b.name;
+      if (quoteEl && b.quote) quoteEl.innerText = b.quote;
       costEl.innerText = formatNumber(cost);
       rateEl.innerText = formatRate(b.nps);
       countEl.innerText = b.count;
@@ -411,6 +467,12 @@ function updateUI() {
     const networkCard = document.getElementById('active-network-upgrade');
     if (nextNetworkUpg && networkCard) {
       networkCard.classList.toggle('disabled', newspapers < nextNetworkUpg.cost || !isUpgradeUnlocked(nextNetworkUpg));
+    }
+
+    const nextWardenclyffeUpg = wardenclyffeUpgrades.find(u => !u.purchased);
+    const wardenclyffeCard = document.getElementById('active-wardenclyffe-upgrade');
+    if (nextWardenclyffeUpg && wardenclyffeCard) {
+      wardenclyffeCard.classList.toggle('disabled', newspapers < nextWardenclyffeUpg.cost || !isUpgradeUnlocked(nextWardenclyffeUpg));
     }
   }
 
