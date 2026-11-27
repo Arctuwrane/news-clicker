@@ -33,6 +33,16 @@ const buildings = [
   { id: 'hub', name: 'Distribution Hub', baseNps: 1455, nps: 1455, baseCost: 1800000, count: 0 },
   { id: 'network', name: 'Global News Network', baseNps: 8325, nps: 8325, baseCost: 25000000, count: 0 },
   { id: 'wardenclyffe', name: 'Wardenclyffe', baseNps: 48500, nps: 48500, baseCost: 390000000, count: 0 }
+  { id: 'university', name: 'University', quote: '"For some, knowledge is a bestseller"', requiresUpgrade: 'space_science', baseNps: 285000, nps: 285000, baseCost: 5500000000, count: 0 },
+  { id: 'cloud_blimp', name: 'Cloud Blimp', quote: '"Drops newspapers from the sky!"', requiresUpgrade: 'space_science', baseNps: 1800000, nps: 1800000, baseCost: 85000000000, count: 0 },
+  { id: 'spaceship', name: 'Spaceship', quote: '"To find those planets with wood and woodlike"', requiresUpgrade: 'space_science', baseNps: 8000000, nps: 8000000, baseCost: 730000000000, count: 0 },
+  { id: 'planetary_factory', name: 'TA Planetary Paper Factory', quote: '"Totally Automated. With more gravity, paper gets squeezed more easily and efficiently!"', requiresUpgrade: 'space_science', baseNps: 50000000, nps: 50000000, baseCost: 9000000000000, count: 0 },
+  { id: 'zerog_mining', name: 'Zero-G Mining Station', quote: '"Mine the wooden ores, an ore which functions just as well as paper"', requiresUpgrade: 'space_science', baseNps: 290000000, nps: 290000000, baseCost: 87000000000000, count: 0 },
+  { id: 'colonized_planet', name: 'Colonized Planet', quote: '"Every world I land on, I own"', requiresUpgrade: 'space_science', baseNps: 1500000000, nps: 1500000000, baseCost: 955000000000000, count: 0 },
+  { id: 'galactic_archive', name: 'Galactic Archive', quote: '"Once you see it you can\'t unsee it"', requiresUpgrade: 'space_science', baseNps: 18000000000, nps: 18000000000, baseCost: 20000000000000000, count: 0 },
+  { id: 'warp_speeder', name: 'Warp Speeder', quote: '"Brings news from the future! WARNING: YOU CANNOT CHANGE YOUR FATE"', requiresUpgrade: 'space_science', baseNps: 170000000000, nps: 170000000000, baseCost: 350000000000000000, count: 0 },
+  { id: 'wormhole', name: 'Wormhole', quote: '"Brings news from other worlds"', requiresUpgrade: 'space_science', baseNps: 1000000000000, nps: 1000000000000, baseCost: 9800000000000000000, count: 0 },
+  { id: 'supercollider', name: 'Supercollider', quote: '"Makes new atoms and molecules; these will be commercial bestsellers!"', requiresUpgrade: 'space_science', baseNps: 12000000000000, nps: 12000000000000, baseCost: 500000000000000000000, count: 0 }
 ];
 
 const NEWSPAPER_SVG = `
