@@ -662,6 +662,8 @@ const networkUpgrades = [
     quote: '"Now the possibilities are limitless!"',
     purchased: false
   }
+];
+
   const wardenclyffeUpgrades = [
   {
     id: 'space_science',
@@ -761,4 +763,4 @@ const networkUpgrades = [
     purchased: false
   }
 ];
-];
+
