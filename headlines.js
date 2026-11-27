@@ -574,4 +574,99 @@ const unlockedHeadlines = [
     requires: 'engine_compatible',
     text: () => `Infinity becomes more realistic`
   }
+  // --- Wardenclyffe Upgrade-Locked Headlines ---
+  {
+    requires: 'radios',
+    text: () => `Casino Plus! Plus! Plus!`
+  },
+  {
+    requires: 'solar_panels',
+    text: () => `Solar panels applied all over the world, Sun slowly losing its soul`
+  },
+  {
+    requires: 'satellites',
+    text: () => `First satellite deployed by news company!`
+  },
+  {
+    requires: 'satellites',
+    text: () => {
+      const current = russianSatellitesCount;
+      if (russianSatellitesCount < 380855) {
+        russianSatellitesCount += 1;
+      }
+      return `Russia currently has ${current.toLocaleString()} satellites deployed!`;
+    }
+  },
+  {
+    requires: 'extra_enhanced_telecommunication',
+    text: () => `People all over the world are enjoying telecommunication!`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Quantum computing ends in dividing by zero, scientists baffled!`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Scientists just create their own problems`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Mathematicians worldwide debate on whether 0⁰ equals 1 or 0!`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Twin prime number theory solved!`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Is 0/0 undefined or 0?`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Students worldwide confused as question #${randInt(1, 60)} asks you to graph a complex number ${randInt(1, 99)} - ${randInt(2, 99)}i, even though the answer is just by using a complex plane!`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Solve for x and y: x² + y² = -1`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `Solve for x: x + 1 = x`
+  },
+  {
+    requires: 'autoquantum_computing',
+    text: () => `What if 6 = 7?`
+  },
+  {
+    requires: 'true_rng',
+    text: () => `Casinos can no longer cheat, causing casinos to close worldwide!`
+  },
+  {
+    requires: 'true_rng',
+    text: () => `True RNG has bankrupted hundreds of scammers`
+  },
+  {
+    requires: 'ftl_waves',
+    text: () => `"EVERYTHING IS SO FAST!!!!" remarks local`
+  },
+  {
+    requires: 'ftl_waves',
+    text: () => `"Long days seem shorter..." rambles insane press worker`
+  },
+  {
+    requires: 'dyson_swarms',
+    text: () => `The sun is a deadly laser`
+  },
+  {
+    requires: 'dyson_swarms',
+    text: () => `The sun is black as night at day`
+  },
+  {
+    requires: 'ai_supercore',
+    text: () => `"Are we sure we should be letting AI take care of our laser tech?" yaps confused paranoid futurist`
+  },
+  {
+    requires: 'ai_supercore',
+    text: () => `The matrix will definitely be coming`
+  }
 ];
