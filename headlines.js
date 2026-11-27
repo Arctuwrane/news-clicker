@@ -573,7 +573,7 @@ const unlockedHeadlines = [
   {
     requires: 'engine_compatible',
     text: () => `Infinity becomes more realistic`
-  }
+  },
   // --- Wardenclyffe Upgrade-Locked Headlines ---
   {
     requires: 'radios',
